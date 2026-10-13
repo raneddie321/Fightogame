@@ -1,0 +1,9 @@
+# Build outputs (packaged deliverables live in dist/)
+build/
+build-*/
+android/build/
+*.o
+*.obj
+*.tmp
+userdata/
+autotest_out/

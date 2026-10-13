@@ -1,0 +1,7 @@
+# Large binary model/texture assets use Git LFS when present
+*.glb filter=lfs diff=lfs merge=lfs -text
+*.gltf.bin filter=lfs diff=lfs merge=lfs -text
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+assets/models/**/*.png filter=lfs diff=lfs merge=lfs -text
+assets/models/**/*.jpg filter=lfs diff=lfs merge=lfs -text
