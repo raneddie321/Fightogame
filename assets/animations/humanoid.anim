@@ -1,0 +1,227 @@
+# FIGHTO humanoid animation clips (custom text format, loaded by src/game/character.cpp)
+#
+#   clip <name> <length-seconds> [loop] [hit <start> <end>]
+#   key <time> [root x y z] <bone> <pitch> <yaw> <roll> ...
+#
+# Bones: pelvis spine chest neck head  lua lfa lh  rua rfa rh  lth lsh lft  rth rsh rft
+# Angles in degrees. Character faces +Z, left side is +X.
+#   thigh pitch < 0 : leg forward      shin pitch > 0 : knee bend
+#   upper arm pitch < 0 : arm forward / up     forearm pitch < 0 : elbow bend
+#   left arm roll > 0 / right arm roll < 0 : arm raised sideways
+#   spine/chest pitch > 0 : lean forward      yaw > 0 : turn to the left
+# Bones not listed in a key stay at the rest pose.
+
+clip idle 3.2 loop
+key 0.0 spine 1 0 0 | chest 0 0 0 | head 2 0 0 | lua 2 0 5 | rua 2 0 -5 | lfa -10 0 0 | rfa -10 0 0
+key 1.6 root 0 0.005 0 spine 2 0 0 | chest 2 0 0 | head 1 4 0 | lua 1 0 6 | rua 1 0 -6 | lfa -12 0 0 | rfa -12 0 0
+key 3.2 spine 1 0 0 | chest 0 0 0 | head 2 0 0 | lua 2 0 5 | rua 2 0 -5 | lfa -10 0 0 | rfa -10 0 0
+
+clip fight_idle 1.0 loop
+key 0.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | lft -4 0 0 | rth 12 0 0 | rsh 20 0 0 | rft -8 0 0
+key 0.5 root 0 -0.07 0 pelvis 0 -20 0 | spine 9 0 0 | chest 3 18 0 | head 9 -15 0 | lua -62 0 12 | lfa -112 0 0 | rua -47 0 -18 | rfa -127 0 0 | lth -16 0 0 | lsh 20 0 0 | lft -5 0 0 | rth 10 0 0 | rsh 24 0 0 | rft -10 0 0
+key 1.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | lft -4 0 0 | rth 12 0 0 | rsh 20 0 0 | rft -8 0 0
+
+clip jab 0.42 hit 0.08 0.2
+key 0.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+key 0.1 root 0 -0.06 0.06 pelvis 0 -25 0 | spine 12 0 0 | chest 2 -2 0 | head 8 -5 0 | lua -90 0 4 | lfa -4 0 0 | rua -45 0 -18 | rfa -128 0 0 | lth -20 0 0 | lsh 14 0 0 | rth 16 0 0 | rsh 18 0 0
+key 0.2 root 0 -0.06 0.06 pelvis 0 -25 0 | spine 12 0 0 | chest 2 -2 0 | head 8 -5 0 | lua -90 0 4 | lfa -2 0 0 | rua -45 0 -18 | rfa -128 0 0 | lth -20 0 0 | lsh 14 0 0 | rth 16 0 0 | rsh 18 0 0
+key 0.42 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+
+clip cross 0.5 hit 0.13 0.25
+key 0.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+key 0.14 root 0 -0.07 0.1 pelvis 0 10 0 | spine 14 0 0 | chest 2 28 0 | head 8 -25 0 | lua -62 0 14 | lfa -118 0 0 | rua -92 0 -3 | rfa -3 0 0 | lth -22 0 0 | lsh 18 0 0 | rth 18 0 0 | rsh 22 0 0 | rft -22 0 0
+key 0.25 root 0 -0.07 0.1 pelvis 0 10 0 | spine 14 0 0 | chest 2 28 0 | head 8 -25 0 | lua -62 0 14 | lfa -118 0 0 | rua -92 0 -3 | rfa -2 0 0 | lth -22 0 0 | lsh 18 0 0 | rth 18 0 0 | rsh 22 0 0 | rft -22 0 0
+key 0.5 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+
+clip hook 0.56 hit 0.18 0.3
+key 0.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+key 0.12 root 0 -0.08 0 pelvis 0 -10 0 | spine 10 0 0 | chest 2 35 0 | head 8 -25 0 | lua -80 0 65 | lfa -95 0 0 | rua -45 0 -18 | rfa -128 0 0 | lth -16 0 0 | lsh 22 0 0 | rth 12 0 0 | rsh 24 0 0
+key 0.24 root 0 -0.08 0.05 pelvis 0 -40 0 | spine 12 0 0 | chest 4 -35 0 | head 8 10 0 | lua -88 0 70 | lfa -90 0 0 | rua -45 0 -18 | rfa -128 0 0 | lth -16 0 0 | lsh 22 0 0 | lft -15 0 0 | rth 12 0 0 | rsh 24 0 0
+key 0.32 root 0 -0.08 0.05 pelvis 0 -45 0 | spine 12 0 0 | chest 4 -45 0 | head 8 15 0 | lua -85 0 60 | lfa -92 0 0 | rua -45 0 -18 | rfa -128 0 0 | lth -16 0 0 | lsh 22 0 0 | lft -15 0 0 | rth 12 0 0 | rsh 24 0 0
+key 0.56 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+
+clip uppercut 0.66 hit 0.26 0.4
+key 0.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+key 0.2 root 0 -0.18 0 pelvis 0 -5 0 | spine 22 0 0 | chest 4 25 0 | head 10 -20 0 | lua -62 0 14 | lfa -115 0 0 | rua -15 0 -12 | rfa -100 0 0 | lth -40 0 0 | lsh 55 0 0 | lft -15 0 0 | rth -10 0 0 | rsh 55 0 0 | rft -30 0 0
+key 0.32 root 0 0.02 0.08 pelvis 0 15 0 | spine -6 0 0 | chest -8 30 0 | head -10 -20 0 | lua -62 0 14 | lfa -118 0 0 | rua -150 0 -10 | rfa -65 0 0 | lth -14 0 0 | lsh 10 0 0 | rth 10 0 0 | rsh 15 0 0 | rft -25 0 0
+key 0.4 root 0 0.02 0.08 pelvis 0 15 0 | spine -6 0 0 | chest -8 30 0 | head -10 -20 0 | lua -62 0 14 | lfa -118 0 0 | rua -155 0 -10 | rfa -60 0 0 | lth -14 0 0 | lsh 10 0 0 | rth 10 0 0 | rsh 15 0 0
+key 0.66 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+
+clip kick 0.78 hit 0.3 0.46
+key 0.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+key 0.18 root 0 -0.02 0 pelvis 0 0 0 | spine -5 0 0 | chest 0 10 0 | head 10 0 0 | lua -55 0 25 | lfa -110 0 0 | rua -40 0 -25 | rfa -120 0 0 | lth -5 0 0 | lsh 12 0 0 | rth -85 0 0 | rsh 95 0 0 | rft 20 0 0
+key 0.32 root 0 0.0 0.1 pelvis 0 0 0 | spine -15 0 0 | chest -4 5 0 | head 15 0 0 | lua -50 0 30 | lfa -105 0 0 | rua -35 0 -30 | rfa -115 0 0 | lth 0 0 0 | lsh 10 0 0 | rth -95 0 0 | rsh 5 0 0 | rft -20 0 0
+key 0.46 root 0 0.0 0.1 pelvis 0 0 0 | spine -15 0 0 | chest -4 5 0 | head 15 0 0 | lua -50 0 30 | lfa -105 0 0 | rua -35 0 -30 | rfa -115 0 0 | lth 0 0 0 | lsh 10 0 0 | rth -92 0 0 | rsh 8 0 0 | rft -20 0 0
+key 0.62 root 0 -0.02 0.05 pelvis 0 -10 0 | spine 0 0 0 | chest 0 10 0 | head 10 -5 0 | lua -55 0 20 | lfa -110 0 0 | rua -40 0 -22 | rfa -120 0 0 | lth -8 0 0 | lsh 14 0 0 | rth -50 0 0 | rsh 80 0 0
+key 0.78 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+
+clip haymaker 0.92 hit 0.46 0.6
+key 0.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+key 0.38 root 0 -0.1 -0.08 pelvis 0 -35 0 | spine 4 0 0 | chest -2 -30 0 | head 6 25 0 | lua -70 0 20 | lfa -110 0 0 | rua 25 0 -70 | rfa -70 0 0 | lth -18 0 0 | lsh 25 0 0 | rth 18 0 0 | rsh 30 0 0
+key 0.52 root 0 -0.1 0.15 pelvis 0 20 0 | spine 18 0 0 | chest 4 40 0 | head 10 -30 0 | lua -50 0 25 | lfa -100 0 0 | rua -95 0 -25 | rfa -15 0 0 | lth -28 0 0 | lsh 25 0 0 | rth 20 0 0 | rsh 25 0 0 | rft -25 0 0
+key 0.62 root 0 -0.1 0.18 pelvis 0 25 0 | spine 20 0 0 | chest 4 45 0 | head 10 -30 0 | lua -50 0 25 | lfa -100 0 0 | rua -90 0 -10 | rfa -10 0 0 | lth -28 0 0 | lsh 25 0 0 | rth 20 0 0 | rsh 25 0 0 | rft -25 0 0
+key 0.92 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+
+clip elbow 0.46 hit 0.12 0.24
+key 0.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+key 0.14 root 0 -0.08 0.08 pelvis 0 15 0 | spine 12 0 0 | chest 4 45 0 | head 8 -30 0 | lua -62 0 14 | lfa -115 0 0 | rua -95 0 -75 | rfa -145 0 0 | lth -20 0 0 | lsh 20 0 0 | rth 15 0 0 | rsh 20 0 0 | rft -20 0 0
+key 0.24 root 0 -0.08 0.08 pelvis 0 20 0 | spine 12 0 0 | chest 4 50 0 | head 8 -30 0 | lua -62 0 14 | lfa -115 0 0 | rua -95 0 -70 | rfa -145 0 0 | lth -20 0 0 | lsh 20 0 0 | rth 15 0 0 | rsh 20 0 0 | rft -20 0 0
+key 0.46 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | head 8 -15 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+
+clip sweep 0.62 hit 0.22 0.36
+key 0.0 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+key 0.2 root 0 -0.45 0 pelvis 0 -40 0 | spine 30 0 0 | chest 0 20 0 | lua -40 0 40 | lfa -60 0 0 | rua -30 0 -40 | rfa -60 0 0 | lth -70 0 0 | lsh 120 0 0 | rth -20 0 60 | rsh 10 0 0
+key 0.34 root 0 -0.45 0 pelvis 0 30 0 | spine 30 0 0 | chest 0 20 0 | lua -40 0 40 | lfa -60 0 0 | rua -30 0 -40 | rfa -60 0 0 | lth -70 0 0 | lsh 120 0 0 | rth -40 0 10 | rsh 5 0 0
+key 0.62 root 0 -0.05 0 pelvis 0 -20 0 | spine 8 0 0 | chest 2 18 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+
+clip throw 1.0 hit 0.45 0.6
+key 0.0 spine 8 0 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0
+key 0.3 root 0 -0.1 0.1 spine 20 0 0 | lua -85 0 10 | lfa -40 0 0 | rua -85 0 -10 | rfa -40 0 0 | lth -20 0 0 | lsh 30 0 0 | rth 10 0 0 | rsh 25 0 0
+key 0.55 root 0 -0.05 0.05 spine -10 0 0 | chest 0 60 0 | lua -120 0 30 | lfa -30 0 0 | rua -60 0 -40 | rfa -30 0 0 | lth -20 0 0 | lsh 20 0 0
+key 1.0 spine 8 0 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0
+
+clip block 0.3 loop
+key 0.0 root 0 -0.08 0 spine 14 0 0 | chest 4 5 0 | head 18 0 0 | lua -72 0 8 | lfa -138 0 0 | rua -72 0 -8 | rfa -138 0 0 | lth -12 0 0 | lsh 22 0 0 | rth 10 0 0 | rsh 24 0 0
+key 0.3 root 0 -0.08 0 spine 14 0 0 | chest 4 5 0 | head 18 0 0 | lua -72 0 8 | lfa -138 0 0 | rua -72 0 -8 | rfa -138 0 0 | lth -12 0 0 | lsh 22 0 0 | rth 10 0 0 | rsh 24 0 0
+
+clip dodge 0.5
+key 0.0 root 0 -0.05 0 spine 8 0 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0
+key 0.15 root 0 -0.42 0 spine 38 0 0 | chest 10 0 0 | head 10 0 0 | lua -95 0 20 | lfa -120 0 0 | rua -95 0 -20 | rfa -120 0 0 | lth -75 0 0 | lsh 115 0 0 | lft -35 0 0 | rth -40 0 0 | rsh 120 0 0 | rft -40 0 0
+key 0.32 root 0 -0.38 0 spine 32 0 0 | chest 8 0 0 | head 8 0 0 | lua -90 0 20 | lfa -120 0 0 | rua -90 0 -20 | rfa -120 0 0 | lth -60 0 0 | lsh 100 0 0 | lft -30 0 0 | rth -35 0 0 | rsh 110 0 0 | rft -35 0 0
+key 0.5 root 0 -0.05 0 spine 8 0 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0 | lth -14 0 0 | lsh 16 0 0 | rth 12 0 0 | rsh 20 0 0
+
+clip hit_front 0.38
+key 0.0 spine 8 0 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0
+key 0.08 root 0 -0.12 -0.08 spine 32 0 0 | chest 12 0 0 | head 25 0 0 | lua -30 0 20 | lfa -60 0 0 | rua -30 0 -20 | rfa -60 0 0 | lth -20 0 0 | lsh 35 0 0 | rth 10 0 0 | rsh 30 0 0
+key 0.38 root 0 -0.04 0 spine 10 0 0 | lua -55 0 12 | lfa -105 0 0 | rua -45 0 -18 | rfa -120 0 0 | lth -12 0 0 | lsh 14 0 0 | rth 10 0 0 | rsh 18 0 0
+
+clip hit_head 0.38
+key 0.0 spine 8 0 0 | lua -60 0 12 | lfa -110 0 0 | rua -45 0 -18 | rfa -125 0 0
+key 0.07 root 0 -0.03 -0.1 spine -10 0 0 | chest -12 -15 6 | neck -20 0 0 | head -35 25 10 | lua -20 0 45 | lfa -50 0 0 | rua -15 0 -40 | rfa -45 0 0 | lth 5 0 0 | lsh 10 0 0 | rth 18 0 0 | rsh 15 0 0
+key 0.38 root 0 -0.04 0 spine 8 0 0 | head 5 0 0 | lua -55 0 12 | lfa -105 0 0 | rua -45 0 -18 | rfa -120 0 0 | lth -12 0 0 | lsh 14 0 0 | rth 10 0 0 | rsh 18 0 0
+
+clip stagger 0.85
+key 0.0 spine 8 0 0 | lua -50 0 12 | lfa -100 0 0 | rua -45 0 -18 | rfa -110 0 0
+key 0.15 root 0 -0.05 -0.15 spine -18 0 0 | chest -10 20 0 | head -20 -10 0 | lua -10 0 70 | lfa -30 0 0 | rua -20 0 -65 | rfa -25 0 0 | lth 20 0 0 | lsh 25 0 0 | rth -25 0 0 | rsh 15 0 0
+key 0.45 root 0 -0.12 -0.25 spine 10 0 0 | chest 0 -15 0 | head 15 10 0 | lua -20 0 40 | lfa -50 0 0 | rua -30 0 -50 | rfa -40 0 0 | lth -30 0 0 | lsh 50 0 0 | rth 15 0 0 | rsh 40 0 0
+key 0.85 root 0 -0.04 0 spine 8 0 0 | lua -55 0 12 | lfa -105 0 0 | rua -45 0 -18 | rfa -120 0 0 | lth -12 0 0 | lsh 14 0 0 | rth 10 0 0 | rsh 18 0 0
+
+clip knockdown 1.0
+key 0.0 spine 8 0 0 | lua -50 0 12 | lfa -100 0 0 | rua -45 0 -18 | rfa -110 0 0
+key 0.25 root 0 -0.35 -0.3 pelvis -35 0 0 | spine -10 0 0 | head -20 0 0 | lua -40 0 60 | lfa -40 0 0 | rua -40 0 -60 | rfa -40 0 0 | lth -40 0 0 | lsh 60 0 0 | rth -20 0 0 | rsh 40 0 0
+key 0.55 root 0 -0.85 -0.55 pelvis -88 0 0 | spine 0 0 0 | head -10 0 0 | lua -20 0 70 | lfa -30 0 0 | rua -20 0 -70 | rfa -30 0 0 | lth -15 0 0 | lsh 20 0 0 | rth -5 0 0 | rsh 10 0 0
+key 1.0 root 0 -0.86 -0.55 pelvis -90 0 0 | head 10 15 0 | lua -10 0 75 | lfa -20 0 0 | rua -15 0 -70 | rfa -25 0 0 | lth -20 0 0 | lsh 30 0 0 | rth -5 0 0 | rsh 8 0 0
+
+clip getup 1.1
+key 0.0 root 0 -0.86 -0.55 pelvis -90 0 0 | head 10 15 0 | lua -10 0 75 | lfa -20 0 0 | rua -15 0 -70 | rfa -25 0 0 | lth -20 0 0 | lsh 30 0 0
+key 0.35 root 0 -0.7 -0.4 pelvis -60 0 0 | spine 40 0 0 | head 20 0 0 | lua 20 0 30 | lfa -10 0 0 | rua 20 0 -30 | rfa -10 0 0 | lth -70 0 0 | lsh 120 0 0 | rth -60 0 0 | rsh 110 0 0
+key 0.7 root 0 -0.45 -0.15 pelvis -10 0 0 | spine 35 0 0 | head 10 0 0 | lua -30 0 20 | lfa -40 0 0 | rua -30 0 -20 | rfa -40 0 0 | lth -75 0 0 | lsh 120 0 0 | lft -40 0 0 | rth -40 0 0 | rsh 100 0 0 | rft -50 0 0
+key 1.1 root 0 -0.04 0 spine 8 0 0 | lua -55 0 12 | lfa -105 0 0 | rua -45 0 -18 | rfa -120 0 0 | lth -12 0 0 | lsh 14 0 0 | rth 10 0 0 | rsh 18 0 0
+
+clip death_back 1.1
+key 0.0 spine 5 0 0 | lua -30 0 10 | lfa -60 0 0 | rua -30 0 -10 | rfa -60 0 0
+key 0.2 root 0 -0.1 -0.1 pelvis -15 0 0 | spine -20 0 0 | chest -10 0 0 | head -40 20 0 | lua -10 0 50 | lfa -20 0 0 | rua -10 0 -50 | rfa -20 0 0 | lth -10 0 0 | lsh 30 0 0 | rth 10 0 0 | rsh 40 0 0
+key 0.5 root 0 -0.5 -0.45 pelvis -60 0 0 | spine -10 0 0 | head -20 30 0 | lua -10 0 80 | lfa -10 0 0 | rua -10 0 -80 | rfa -10 0 0 | lth -30 0 0 | lsh 70 0 0 | rth -10 0 0 | rsh 50 0 0
+key 0.8 root 0 -0.88 -0.7 pelvis -90 0 0 | head 0 40 0 | lua 10 0 85 | lfa -15 0 0 | rua 20 0 -75 | rfa -30 0 0 | lth -10 0 8 | lsh 15 0 0 | rth 0 0 -10 | rsh 5 0 0
+key 1.1 root 0 -0.9 -0.72 pelvis -92 0 0 | head 5 45 0 | lua 12 0 88 | lfa -12 0 0 | rua 22 0 -78 | rfa -28 0 0 | lth -8 0 10 | lsh 12 0 0 | lft 30 0 0 | rth 0 0 -12 | rsh 5 0 0 | rft 30 0 0
+
+clip death_forward 1.1
+key 0.0 spine 5 0 0 | lua -30 0 10 | lfa -60 0 0 | rua -30 0 -10 | rfa -60 0 0
+key 0.25 root 0 -0.25 0.15 pelvis 20 0 0 | spine 30 0 0 | head 20 0 0 | lua -40 0 30 | lfa -20 0 0 | rua -40 0 -30 | rfa -20 0 0 | lth -30 0 0 | lsh 80 0 0 | rth -20 0 0 | rsh 90 0 0
+key 0.6 root 0 -0.75 0.55 pelvis 75 0 0 | spine 10 0 0 | head -30 -30 0 | lua -120 0 40 | lfa -20 0 0 | rua -110 0 -40 | rfa -30 0 0 | lth 10 0 0 | lsh 30 0 0 | rth 5 0 0 | rsh 40 0 0
+key 1.1 root 0 -0.86 0.7 pelvis 90 0 0 | head -40 -50 0 | lua -150 0 50 | lfa -15 0 0 | rua -40 0 -60 | rfa -20 0 0 | lth 5 0 5 | lsh 10 0 0 | rth 0 0 -5 | rsh 20 0 0
+
+clip dead_back 1.0 loop
+key 0.0 root 0 -0.9 -0.72 pelvis -92 0 0 | head 5 45 0 | lua 12 0 88 | lfa -12 0 0 | rua 22 0 -78 | rfa -28 0 0 | lth -8 0 10 | lsh 12 0 0 | lft 30 0 0 | rth 0 0 -12 | rsh 5 0 0 | rft 30 0 0
+key 1.0 root 0 -0.9 -0.72 pelvis -92 0 0 | head 5 45 0 | lua 12 0 88 | lfa -12 0 0 | rua 22 0 -78 | rfa -28 0 0 | lth -8 0 10 | lsh 12 0 0 | lft 30 0 0 | rth 0 0 -12 | rsh 5 0 0 | rft 30 0 0
+
+clip dead_front 1.0 loop
+key 0.0 root 0 -0.86 0.7 pelvis 90 0 0 | head -40 -50 0 | lua -150 0 50 | lfa -15 0 0 | rua -40 0 -60 | rfa -20 0 0 | lth 5 0 5 | lsh 10 0 0 | rth 0 0 -5 | rsh 20 0 0
+key 1.0 root 0 -0.86 0.7 pelvis 90 0 0 | head -40 -50 0 | lua -150 0 50 | lfa -15 0 0 | rua -40 0 -60 | rfa -20 0 0 | lth 5 0 5 | lsh 10 0 0 | rth 0 0 -5 | rsh 20 0 0
+
+clip jump 0.6
+key 0.0 root 0 -0.1 0 spine 10 0 0 | lua 20 0 10 | lfa -30 0 0 | rua 20 0 -10 | rfa -30 0 0 | lth -20 0 0 | lsh 40 0 0 | rth -20 0 0 | rsh 40 0 0
+key 0.25 spine 5 0 0 | lua -60 0 25 | lfa -40 0 0 | rua -60 0 -25 | rfa -40 0 0 | lth -45 0 0 | lsh 70 0 0 | rth -15 0 0 | rsh 50 0 0
+key 0.6 spine 2 0 0 | lua -30 0 35 | lfa -30 0 0 | rua -30 0 -35 | rfa -30 0 0 | lth -25 0 0 | lsh 35 0 0 | rth -10 0 0 | rsh 25 0 0
+
+clip fall 0.8 loop
+key 0.0 spine -5 0 0 | lua -40 0 45 | lfa -30 0 0 | rua -40 0 -45 | rfa -30 0 0 | lth -25 0 0 | lsh 30 0 0 | rth -5 0 0 | rsh 25 0 0
+key 0.4 spine -4 0 0 | lua -50 0 50 | lfa -35 0 0 | rua -50 0 -50 | rfa -35 0 0 | lth -20 0 0 | lsh 35 0 0 | rth -10 0 0 | rsh 30 0 0
+key 0.8 spine -5 0 0 | lua -40 0 45 | lfa -30 0 0 | rua -40 0 -45 | rfa -30 0 0 | lth -25 0 0 | lsh 30 0 0 | rth -5 0 0 | rsh 25 0 0
+
+clip aim_pistol 0.5 loop
+key 0.0 spine 4 0 0 | chest 0 8 0 | head 4 -8 0 | rua -88 0 -6 | rfa -3 0 0 | rh 0 0 0 | lua -78 0 -32 | lfa -32 0 0
+key 0.5 spine 4 0 0 | chest 0 8 0 | head 4 -8 0 | rua -88 0 -6 | rfa -3 0 0 | rh 0 0 0 | lua -78 0 -32 | lfa -32 0 0
+
+clip aim_rifle 0.5 loop
+key 0.0 spine 6 0 0 | chest 0 22 0 | head 8 -18 0 | rua -60 0 -42 | rfa -98 0 0 | lua -84 0 -8 | lfa -28 0 0
+key 0.5 spine 6 0 0 | chest 0 22 0 | head 8 -18 0 | rua -60 0 -42 | rfa -98 0 0 | lua -84 0 -8 | lfa -28 0 0
+
+clip reload 1.2
+key 0.0 spine 6 0 0 | chest 0 15 0 | rua -60 0 -20 | rfa -80 0 0 | lua -60 0 -10 | lfa -40 0 0
+key 0.3 spine 10 0 0 | chest 0 10 0 | head 20 0 0 | rua -40 0 -15 | rfa -90 0 0 | lua -10 0 10 | lfa -60 0 0
+key 0.7 spine 10 0 0 | chest 0 10 0 | head 20 0 0 | rua -45 0 -15 | rfa -90 0 0 | lua -50 0 -25 | lfa -70 0 0
+key 1.0 spine 8 0 0 | chest 0 12 0 | head 15 0 0 | rua -55 0 -20 | rfa -85 0 0 | lua -55 0 -15 | lfa -50 0 0
+key 1.2 spine 6 0 0 | chest 0 15 0 | rua -60 0 -20 | rfa -80 0 0 | lua -60 0 -10 | lfa -40 0 0
+
+clip drive 1.0 loop
+key 0.0 root 0 -0.48 0.05 spine -8 0 0 | head 5 0 0 | lua -48 0 8 | lfa -45 0 0 | rua -48 0 -8 | rfa -45 0 0 | lth -85 0 4 | lsh 85 0 0 | rth -85 0 -4 | rsh 85 0 0
+key 1.0 root 0 -0.48 0.05 spine -8 0 0 | head 5 0 0 | lua -48 0 8 | lfa -45 0 0 | rua -48 0 -8 | rfa -45 0 0 | lth -85 0 4 | lsh 85 0 0 | rth -85 0 -4 | rsh 85 0 0
+
+clip interact 0.8
+key 0.0 spine 2 0 0 | rua 0 0 -5 | rfa -10 0 0
+key 0.35 spine 15 0 0 | head 10 0 0 | rua -70 0 -5 | rfa -20 0 0 | lth -10 0 0 | lsh 15 0 0
+key 0.55 spine 15 0 0 | head 10 0 0 | rua -72 0 -5 | rfa -15 0 0 | lth -10 0 0 | lsh 15 0 0
+key 0.8 spine 2 0 0 | rua 0 0 -5 | rfa -10 0 0
+
+clip takedown 1.4 hit 0.5 1.1
+key 0.0 spine 10 0 0 | lua -40 0 10 | lfa -60 0 0 | rua -40 0 -10 | rfa -60 0 0
+key 0.35 root 0 -0.1 0.15 spine 18 0 0 | lua -85 0 -20 | lfa -110 0 0 | rua -85 0 20 | rfa -110 0 0 | lth -20 0 0 | lsh 30 0 0 | rth 15 0 0 | rsh 25 0 0
+key 0.8 root 0 -0.2 0.1 spine 25 -10 0 | chest 5 10 0 | lua -80 0 -25 | lfa -125 0 0 | rua -80 0 25 | rfa -125 0 0 | lth -30 0 0 | lsh 50 0 0 | rth 10 0 0 | rsh 40 0 0
+key 1.1 root 0 -0.3 0.05 spine 35 10 0 | chest 5 -10 0 | lua -70 0 -25 | lfa -125 0 0 | rua -70 0 25 | rfa -125 0 0 | lth -45 0 0 | lsh 75 0 0 | rth 0 0 0 | rsh 60 0 0
+key 1.4 spine 8 0 0 | lua -50 0 12 | lfa -100 0 0 | rua -45 0 -18 | rfa -110 0 0
+
+clip point 1.2 loop
+key 0.0 spine 2 0 0 | chest 0 15 0 | head 0 -12 0 | rua -92 0 -3 | rfa -3 0 0 | lua 5 0 8 | lfa -20 0 0
+key 0.6 spine 3 0 0 | chest 0 17 0 | head 3 -12 0 | rua -94 0 -2 | rfa -6 0 0 | lua 5 0 8 | lfa -20 0 0
+key 1.2 spine 2 0 0 | chest 0 15 0 | head 0 -12 0 | rua -92 0 -3 | rfa -3 0 0 | lua 5 0 8 | lfa -20 0 0
+
+clip cower 1.0 loop
+key 0.0 root 0 -0.5 -0.05 spine 40 0 0 | chest 10 0 0 | head 20 0 0 | lua -150 0 35 | lfa -120 0 0 | rua -150 0 -35 | rfa -120 0 0 | lth -65 0 0 | lsh 120 0 0 | lft -45 0 0 | rth -60 0 0 | rsh 115 0 0 | rft -45 0 0
+key 0.5 root 0 -0.5 -0.05 spine 42 0 0 | chest 10 0 2 | head 22 0 0 | lua -148 0 35 | lfa -122 0 0 | rua -152 0 -35 | rfa -118 0 0 | lth -65 0 0 | lsh 120 0 0 | lft -45 0 0 | rth -60 0 0 | rsh 115 0 0 | rft -45 0 0
+key 1.0 root 0 -0.5 -0.05 spine 40 0 0 | chest 10 0 0 | head 20 0 0 | lua -150 0 35 | lfa -120 0 0 | rua -150 0 -35 | rfa -120 0 0 | lth -65 0 0 | lsh 120 0 0 | lft -45 0 0 | rth -60 0 0 | rsh 115 0 0 | rft -45 0 0
+
+clip surrender 1.0 loop
+key 0.0 spine -2 0 0 | head -5 0 0 | lua -165 0 25 | lfa -35 0 0 | rua -165 0 -25 | rfa -35 0 0
+key 1.0 spine -2 0 0 | head -5 0 0 | lua -165 0 25 | lfa -35 0 0 | rua -165 0 -25 | rfa -35 0 0
+
+clip claw 0.62 hit 0.24 0.38
+key 0.0 spine 20 0 0 | chest 14 0 0 | neck -25 0 0 | lua -20 0 10 | lfa -40 0 0 | rua -20 0 -10 | rfa -40 0 0
+key 0.2 root 0 -0.05 -0.05 spine 10 0 0 | chest 5 -35 0 | neck -20 0 0 | head -20 20 0 | rua 40 0 -60 | rfa -60 0 0 | lua -50 0 20 | lfa -60 0 0 | lth -20 0 0 | lsh 40 0 0 | rth 10 0 0 | rsh 40 0 0
+key 0.32 root 0 -0.08 0.15 spine 30 0 0 | chest 10 40 0 | neck -30 0 0 | head -10 -20 0 | rua -105 0 20 | rfa -20 0 0 | lua -40 0 30 | lfa -50 0 0 | lth -40 0 0 | lsh 50 0 0 | rth 20 0 0 | rsh 40 0 0
+key 0.62 spine 20 0 0 | chest 14 0 0 | neck -25 0 0 | lua -20 0 10 | lfa -40 0 0 | rua -20 0 -10 | rfa -40 0 0
+
+clip leap 0.85 hit 0.3 0.62
+key 0.0 root 0 -0.2 0 spine 35 0 0 | neck -35 0 0 | lua -20 0 20 | lfa -30 0 0 | rua -20 0 -20 | rfa -30 0 0 | lth -60 0 0 | lsh 100 0 0 | lft -40 0 0 | rth -60 0 0 | rsh 100 0 0 | rft -40 0 0
+key 0.3 root 0 0.1 0.1 spine 10 0 0 | neck -20 0 0 | head -20 0 0 | lua -130 0 20 | lfa -10 0 0 | rua -130 0 -20 | rfa -10 0 0 | lth 10 0 0 | lsh 30 0 0 | rth 20 0 0 | rsh 40 0 0
+key 0.6 root 0 0.0 0.2 spine 25 0 0 | neck -25 0 0 | lua -110 0 15 | lfa -40 0 0 | rua -110 0 -15 | rfa -40 0 0 | lth -40 0 0 | lsh 60 0 0 | rth -30 0 0 | rsh 60 0 0
+key 0.85 spine 20 0 0 | chest 14 0 0 | neck -25 0 0 | lua -20 0 10 | lfa -40 0 0 | rua -20 0 -10 | rfa -40 0 0
+
+clip screech 1.2
+key 0.0 spine 20 0 0 | chest 14 0 0 | neck -25 0 0 | lua -20 0 10 | lfa -40 0 0 | rua -20 0 -10 | rfa -40 0 0
+key 0.35 root 0 0.05 0 spine -10 0 0 | chest -15 0 0 | neck -30 0 0 | head -35 0 0 | lua -40 0 70 | lfa -30 0 0 | rua -40 0 -70 | rfa -30 0 0
+key 0.85 root 0 0.05 0 spine -12 0 0 | chest -15 0 0 | neck -32 0 0 | head -38 6 0 | lua -45 0 75 | lfa -35 0 0 | rua -45 0 -75 | rfa -35 0 0
+key 1.2 spine 20 0 0 | chest 14 0 0 | neck -25 0 0 | lua -20 0 10 | lfa -40 0 0 | rua -20 0 -10 | rfa -40 0 0
+
+clip stomp 1.0 hit 0.55 0.72
+key 0.0 spine 10 0 0 | lua -20 0 20 | lfa -40 0 0 | rua -20 0 -20 | rfa -40 0 0
+key 0.4 root 0 0.05 0 spine -10 0 0 | lua -160 0 30 | lfa -40 0 0 | rua -160 0 -30 | rfa -40 0 0 | rth -70 0 0 | rsh 60 0 0
+key 0.6 root 0 -0.15 0.1 spine 35 0 0 | lua -70 0 20 | lfa -20 0 0 | rua -70 0 -20 | rfa -20 0 0 | lth -30 0 0 | lsh 50 0 0 | rth -20 0 0 | rsh 30 0 0
+key 1.0 spine 10 0 0 | lua -20 0 20 | lfa -40 0 0 | rua -20 0 -20 | rfa -40 0 0
+
+clip talk 2.4 loop
+key 0.0 spine 2 0 0 | head 2 0 0 | lua 2 0 5 | rua -20 0 -8 | rfa -60 0 0 | lfa -12 0 0
+key 0.6 spine 3 0 0 | head -3 8 0 | lua 2 0 5 | rua -35 0 -12 | rfa -80 0 0 | rh 0 30 0 | lfa -12 0 0
+key 1.2 spine 2 0 0 | head 4 -5 0 | lua -25 0 10 | lfa -70 0 0 | rua -15 0 -8 | rfa -40 0 0
+key 1.8 spine 3 0 0 | head 0 3 0 | lua -10 0 8 | lfa -40 0 0 | rua -30 0 -10 | rfa -70 0 0
+key 2.4 spine 2 0 0 | head 2 0 0 | lua 2 0 5 | rua -20 0 -8 | rfa -60 0 0 | lfa -12 0 0

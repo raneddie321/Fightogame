@@ -84,6 +84,7 @@ inline float dist_xz_sq(vec3 a, vec3 b) { float dx = a.x - b.x, dz = a.z - b.z; 
 inline vec3 flat(vec3 a) { return vec3(a.x, 0, a.z); }
 inline vec3 vmin(vec3 a, vec3 b) { return vec3(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z)); }
 inline vec3 vmax(vec3 a, vec3 b) { return vec3(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z)); }
+inline vec3 reflect_v(vec3 d, vec3 n) { return d - n * (2.0f * dot(d, n)); }
 inline vec3 dir_from_yaw(float yaw) { return vec3(sinf(yaw), 0, cosf(yaw)); }
 inline float yaw_from_dir(vec3 d) { return atan2f(d.x, d.z); }
 
