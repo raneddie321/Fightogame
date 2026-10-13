@@ -103,6 +103,7 @@ static void build_meshes() {
 
 void setpieces_init() {
     build_meshes();
+    log_info("Ambient emitters: %d steam vents, %d fire points", g_world.steamVents.count, g_world.firePoints.count);
     for (int i = 0; i < ARRAY_COUNT(g_ships); i++) {
         g_ships[i].angle = TAU_F * i / ARRAY_COUNT(g_ships);
         g_ships[i].radius = 140.0f + i * 35.0f;
@@ -115,7 +116,18 @@ void setpieces_init() {
 void setpieces_invasion(bool on) { g_invasion = on; g_motherOn = on; }
 void setpieces_mothership(bool on) { g_motherOn = on; }
 
+// Project LANTERN reversed: a column of light from the plaza into the mothership,
+// after which the blinded ship climbs away (persisted through the "lantern_fired" story flag).
+static float g_lanternBeam;
+static float g_retreat;
+void setpieces_lantern_fire() { g_lanternBeam = 10.0f; }
+static vec3 mothership_pos() { return landmark_pos(LM_PLAZA) + vec3(0, 520.0f + 420.0f * g_retreat, 0); }
+
 void setpieces_update(float dt) {
+    if (g_lanternBeam > 0) g_lanternBeam -= dt;
+    float retreatTarget = flag_get("lantern_fired") ? 1.0f : 0.0f;
+    if (g_lanternBeam > 0) retreatTarget = 0.0f;
+    g_retreat += clampf(retreatTarget - g_retreat, -dt * 0.5f, dt * 0.06f);
     for (int i = 0; i < ARRAY_COUNT(g_ships); i++) {
         Ship& s = g_ships[i];
         s.angle += s.speed * dt * (i % 2 ? 1.0f : -1.0f);
@@ -128,9 +140,28 @@ void setpieces_update(float dt) {
     if (g_ventTimer <= 0) {
         g_ventTimer = 0.08f;
         vec3 cam = g.cam.pos;
-        for (int i = 0; i < g_world.steamVents.count; i++) {
-            vec3 v = g_world.steamVents[i];
-            if (length(v - cam) > 70.0f) continue;
+        // Only the nearest few outdoor vents emit, and ambient effects back off when the
+        // particle pool is busy (combat gore always has priority).
+        int nearest[6];
+        float nearestD[6];
+        int nn = 0;
+        bool busy = fx_particle_count() > 2500;
+        for (int i = 0; i < g_world.steamVents.count && !busy; i++) {
+            float dv = length(g_world.steamVents[i] - cam);
+            if (dv > 50.0f) continue;
+            int slot = nn < 6 ? nn++ : -1;
+            if (slot < 0) {
+                int worst = 0;
+                for (int k = 1; k < 6; k++) if (nearestD[k] > nearestD[worst]) worst = k;
+                if (dv >= nearestD[worst]) continue;
+                slot = worst;
+            }
+            nearest[slot] = i;
+            nearestD[slot] = dv;
+        }
+        for (int k = 0; k < nn; k++) {
+            vec3 v = g_world.steamVents[nearest[k]];
+            if (world_is_indoors(v + vec3(0, 0.5f, 0))) continue;
             Particle* p = fx_spawn(PT_SMOKE);
             if (!p) break;
             p->pos = v + vec3(g.rng.range(-0.2f, 0.2f), 0.1f, g.rng.range(-0.2f, 0.2f));
@@ -142,7 +173,7 @@ void setpieces_update(float dt) {
             p->alpha = 0.35f;
             p->drag = 0.4f;
         }
-        for (int i = 0; i < g_world.firePoints.count; i++) {
+        for (int i = 0; i < g_world.firePoints.count && !busy; i++) {
             vec3 v = g_world.firePoints[i];
             if (length(v - cam) > 60.0f) continue;
             for (int k = 0; k < 2; k++) {
@@ -209,8 +240,19 @@ void setpieces_render() {
     }
     if (g_motherOn) {
         di.mesh = &g_mother;
-        di.model = mat4_trs(landmark_pos(LM_PLAZA) + vec3(0, 520.0f, 0), quat_axis_angle(vec3(0, 1, 0), g.time * 0.01f), vec3(1, 1, 1));
+        di.model = mat4_trs(mothership_pos(), quat_axis_angle(vec3(0, 1, 0), g.time * (0.01f + g_retreat * 0.05f)), vec3(1, 1, 1));
         di.castShadow = false;
         renderer_submit(di);
+    }
+    if (g_lanternBeam > 0) {
+        vec3 base = landmark_pos(LM_PLAZA) - vec3(0, 0, 16.0f) + vec3(0, 1.0f, 0);
+        float pulse = 0.75f + 0.25f * sinf(g.time * 31.0f);
+        float fade = saturate(g_lanternBeam * 0.5f) * saturate((10.0f - g_lanternBeam) * 2.0f);
+        BeamDraw core = {base, mothership_pos() - vec3(0, 50.0f, 0), 2.2f, 6.0f, vec3(0.55f, 1.0f, 0.9f), 3.0f * pulse * fade, 1.0f};
+        renderer_beam(core);
+        BeamDraw halo = {base, mothership_pos() - vec3(0, 50.0f, 0), 7.0f, 22.0f, vec3(0.3f, 0.8f, 1.0f), 0.8f * fade, 0.6f};
+        renderer_beam(halo);
+        Light l = {base + vec3(0, 3.0f, 0), 45.0f, vec3(0.4f, 1.0f, 0.9f) * (30.0f * fade), vec3(0, -1, 0), 0};
+        renderer_add_light(l);
     }
 }

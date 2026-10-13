@@ -609,13 +609,42 @@ bool game_frame(float dt, InputState* input, int width, int height) {
         simulate(simDt);
         camera_update(dt);
     } else if (g.screen == SCR_MAIN_MENU || g.screen == SCR_CREDITS || (g.screen == SCR_SETTINGS && g.settingsReturn == SCR_MAIN_MENU) || (g.screen == SCR_CONTROLS && g.settingsReturn == SCR_MAIN_MENU)) {
-        // Attract mode: slow cinematic orbit over Blackridge
+        // Attract mode: curated slow dolly shots along open streets (never through buildings),
+        // cross-faded through black
         g.time += dt;
-        float t = g.realTime * 0.035f;
+        const float shotLen = 14.0f;
+        int shotIdx = (int)(g.realTime / shotLen) % 4;
+        float u = fmodf(g.realTime, shotLen) / shotLen;
         vec3 c = landmark_pos(LM_PLAZA);
-        g.cam.pos = c + vec3(sinf(t) * 120.0f, 55.0f + sinf(t * 0.7f) * 15.0f, cosf(t) * 120.0f);
-        g.cam.target = c + vec3(sinf(t + 1.2f) * 30.0f, 25.0f, cosf(t + 1.2f) * 30.0f);
-        g.cam.fov = 55.0f;
+        vec3 from, to, look;
+        switch (shotIdx) {
+        case 0:  // Down the avenue towards downtown, low over the wet road
+            from = vec3(road_x(4), 6.0f, block_center(4, 6).z);
+            to = vec3(road_x(4), 7.5f, block_center(4, 4).z);
+            look = vec3(0, -0.12f, -1);
+            break;
+        case 1:  // Harlan Street in The Blocks, neon at street level
+            from = vec3(block_center(0, 5).x, 3.2f, road_x(6) - 2.0f);
+            to = vec3(block_center(2, 5).x, 3.6f, road_x(6) - 2.0f);
+            look = vec3(1, -0.08f, 0.15f);
+            break;
+        case 2:  // Skyline from beyond the city edge
+            from = c + vec3(-560.0f, 90.0f, 330.0f);
+            to = c + vec3(-520.0f, 110.0f, 200.0f);
+            look = normalize(c + vec3(0, 80.0f, 0) - lerp(from, to, u));
+            break;
+        default:  // Ironworks rail road, sodium lights and steam
+            from = vec3(block_center(7, 7).x, 5.0f, road_x(7));
+            to = vec3(block_center(5, 7).x, 5.5f, road_x(7));
+            look = vec3(-1, -0.1f, 0.2f);
+            break;
+        }
+        float e = u * u * (3.0f - 2.0f * u);
+        g.cam.pos = lerp(from, to, e);
+        g.cam.target = g.cam.pos + normalize(look) * 10.0f;
+        g.cam.fov = shotIdx == 2 ? 48.0f : 58.0f;
+        float edge = fminf(u, 1.0f - u) * shotLen;
+        g.fade = fmaxf(g.fade, 1.0f - saturate(edge / 0.8f));
         fx_update(dt, world_particle_ground);
         setpieces_update(dt);
     }
@@ -659,6 +688,7 @@ bool game_frame(float dt, InputState* input, int width, int height) {
     menu_update_render();
     if (g.opt.autotest) autotest_overlay();
     ui_end();
+    if (g.opt.autotest) autotest_after_frame();
     if (g.quitRequested) return false;
     if (g.opt.autotest && autotest_finished()) return false;
     return true;

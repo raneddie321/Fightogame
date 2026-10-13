@@ -46,6 +46,9 @@ static const Speaker g_speakers[] = {
     {"thug", "Kings Thug", vec3(1.0f, 0.4f, 0.35f)},
     {"news", "WBRK News", vec3(0.8f, 0.8f, 0.9f)},
     {"shard", "???", vec3(0.4f, 1.0f, 0.9f)},
+    {"sal", "Sal the Promoter", vec3(1.0f, 0.75f, 0.35f)},
+    {"ace", "Ace", vec3(0.95f, 0.8f, 0.5f)},
+    {"maya", "Maya Ortiz", vec3(0.9f, 0.8f, 1.0f)},
 };
 
 const char* speaker_display(const char* id, vec3* color) {

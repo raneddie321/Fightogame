@@ -1,0 +1,31 @@
+# SIDE JOB - STATIC (investigation: alien conspiracy evidence)
+mission 24
+key s24
+title "Static"
+desc "Okafor has picked up three short-range transmitters hidden around Blackridge. Somebody planted them years ago. Find them and bring back their logs."
+start nexus 0 -30
+requires 7
+reward 1200
+side
+
+dialogue s24_brief
+goto @car_lot 0 -20 8 "Find the first transmitter (Silverline Motors)"
+group d1 drone - 2 @car_lot 0 -22 4 alien drone hostile
+name d1 "Alien Drone"
+kill d1 "Destroy the drones guarding it"
+evidence 13 @car_lot 2 -20
+goto @car_lot 2 -20 1.6 "Collect the transmitter log"
+goto @hospital 0 6 8 "Find the second transmitter (St. Agnes Hospital)"
+group d2 drone - 3 @hospital 0 8 4 alien drone hostile
+name d2 "Alien Drone"
+kill d2 "Destroy the drones"
+evidence 14 @hospital 2 7
+goto @hospital 2 7 1.6 "Collect the transmitter log"
+goto @fight_pit 0 -10 8 "Find the third transmitter (the Fight Pit)"
+group d3 drone - 3 @fight_pit 0 -12 4 alien drone hostile
+name d3 "Alien Drone"
+kill d3 "Destroy the drones"
+evidence 15 @fight_pit 2 -10
+goto @fight_pit 2 -10 1.6 "Collect the transmitter log"
+dialogue s24_end
+end

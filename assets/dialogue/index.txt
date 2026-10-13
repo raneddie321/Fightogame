@@ -1,0 +1,5 @@
+# FIGHTO dialogue files (speaker: line). Conversations start with @id.
+act1.dlg
+act2.dlg
+act3.dlg
+side.dlg

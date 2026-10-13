@@ -1,0 +1,22 @@
+# SIDE JOB - REPO MAN (vehicle theft and police pursuit)
+mission 22
+key s22
+title "Repo Man"
+desc "Ace at the pawn shop has a buyer for a muscle car the cops just towed. It's parked right outside the 4th Precinct. Of course it is."
+start pawn 0 -7
+requires 4
+reward 900
+side
+repeatable
+
+vehicle repo muscle @police 12 -8 90 0.55 0.05 0.04
+goto @police 0 -12 10 "Go to the 4th Precinct"
+enter_vehicle repo "Steal the impounded muscle car"
+wanted 2
+music chase
+lose_wanted "Lose the police"
+music tension
+drive_to @chop_shop 0 3 6 "Deliver the car to Varga's Garage"
+exit_vehicle "Get out of the car"
+music calm
+end

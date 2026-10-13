@@ -26,9 +26,15 @@ static bool hit(float x, float y, float w, float h) {
 static int button_list(float x, float y, float w, float h, float gap, const char** labels, const bool* enabled, int n, float size) {
     float s = ui_scale();
     int activated = -1;
-    if (g.ctl.menuDown) { g.menuIndex = (g.menuIndex + 1) % n; audio_play(SND_UI_HOVER, 0.6f); }
-    if (g.ctl.menuUp) { g.menuIndex = (g.menuIndex + n - 1) % n; audio_play(SND_UI_HOVER, 0.6f); }
+    // Keyboard / gamepad navigation skips disabled entries
+    int dir = g.ctl.menuDown ? 1 : g.ctl.menuUp ? -1 : 0;
     g.menuIndex = clamp_t(g.menuIndex, 0, n - 1);
+    if (dir != 0) audio_play(SND_UI_HOVER, 0.6f);
+    if (dir == 0 && enabled && !enabled[g.menuIndex]) dir = 1;
+    for (int k = 0; k < n && dir != 0; k++) {
+        g.menuIndex = (g.menuIndex + dir + n) % n;
+        if (!enabled || enabled[g.menuIndex]) break;
+    }
     for (int i = 0; i < n; i++) {
         float by = y + i * (h + gap);
         bool over = hit(x, by, w, h);
@@ -310,19 +316,23 @@ static void screen_journal() {
             ui_text_wrapped(FONT_UI, cx, cy + 72 * s, 24 * s, cw * 0.45f, mission_objective(), kDim);
             cy += 140 * s;
         }
-        ui_text_shadow(FONT_BOLD, cx, cy, 26 * s, "STORY", kGold);
-        float y = cy + 40 * s;
-        for (int i = 0; i < mission_count(); i++) {
-            if (y > py + ph - 60 * s) break;
-            bool done = (g.pd.missionsDone >> (i & 31)) & 1;  // ids are assigned in load order
-            bool avail = mission_available(i);
-            const char* st = avail ? "AVAILABLE" : "";
-            vec4 col = avail ? kWhite : vec4(1, 1, 1, 0.35f);
-            FIGHTO_UNUSED(done);
-            fmt_str(buf, sizeof(buf), "%s", mission_name(i));
-            ui_text(FONT_UI, cx + 20 * s, y, 24 * s, buf, col);
-            if (st[0]) ui_text(FONT_BOLD, cx + cw * 0.45f, y, 20 * s, st, kGold, ALIGN_RIGHT);
-            y += 32 * s;
+        float y = cy;
+        for (int pass = 0; pass < 2; pass++) {
+            ui_text_shadow(FONT_BOLD, cx, y, 26 * s, pass == 0 ? "STORY" : "SIDE JOBS", kGold);
+            y += 36 * s;
+            for (int i = 0; i < mission_count(); i++) {
+                if (mission_is_side(i) != (pass == 1) || mission_is_hidden(i)) continue;
+                if (y > py + ph - 60 * s) break;
+                bool done = mission_is_done(i);
+                bool avail = mission_available(i);
+                bool cur = mission_active() && str_eq(mission_title(), mission_name(i));
+                const char* st = cur ? "ACTIVE" : avail ? "AVAILABLE" : done ? "COMPLETED" : "LOCKED";
+                vec4 col = (avail || cur) ? kWhite : done ? vec4(0.6f, 0.85f, 0.6f, 0.8f) : vec4(1, 1, 1, 0.3f);
+                ui_text(FONT_UI, cx + 20 * s, y, 22 * s, mission_name(i), col);
+                ui_text(FONT_BOLD, cx + cw * 0.47f, y + 2 * s, 18 * s, st, (avail || cur) ? kGold : col, ALIGN_RIGHT);
+                y += 28 * s;
+            }
+            y += 10 * s;
         }
         // Mission descriptions for available ones (right column)
         float ry = cy + 40 * s;
@@ -521,10 +531,29 @@ static void screen_credits(bool ending) {
     float t = g.realTime - t0;
     float y = H - t * 60 * s;
     if (ending) {
-        const char* epi = "The mothership hangs over Blackridge like a second moon. Somewhere inside it, Eli is still alive - the Shard in Damian's chest hums with his voice. "
-                          "A.E.G.I.S. lit the beacon that called them here. Thorne knew. Kincaid is choosing sides. The war for Blackridge has only started.";
-        ui_text_wrapped(FONT_UI, W * 0.5f, y, 30 * s, W * 0.6f, epi, kWhite, ALIGN_CENTER);
-        y += 260 * s;
+        // The epilogue reflects the choices made during the campaign (story flags)
+        char epi[1400];
+        int n = fmt_str(epi, sizeof(epi), "%s",
+                        "Blinded by its own song, the mothership climbed back into the clouds over Blackridge. It did not leave. "
+                        "Somewhere inside it, Eli is still alive - the Shard hums with his voice every night. ");
+        n += fmt_str(epi + n, (int)sizeof(epi) - n, "%s",
+                     flag_get("thorne_dead") ? "Elias Thorne died in the room where LANTERN was born, and A.E.G.I.S. buried his name with him. "
+                                             : "Elias Thorne sits in a cell beneath the city he sold, waiting to be proven right. ");
+        n += fmt_str(epi + n, (int)sizeof(epi) - n, "%s",
+                     flag_get("trust_kincaid") ? "Commander Kincaid now runs what is left of A.E.G.I.S. - and she never makes a decision without her partner. "
+                                               : "Commander Kincaid now runs what is left of A.E.G.I.S., and she has learned to listen to the car thief. ");
+        n += fmt_str(epi + n, (int)sizeof(epi) - n, "%s",
+                     flag_get("marcus_forgiven") ? "Marcus keeps a booth at the Lucky Star for the day Eli comes home. "
+                                                 : "Marcus left Blackridge with his daughter. He still sends a postcard every month, unanswered. ");
+        n += fmt_str(epi + n, (int)sizeof(epi) - n, "%s",
+                     flag_get("varga_spared") ? "Varga's people run guns to the resistance now, at a discount. "
+                                              : "With Varga gone, the Kings took Ironworks, and then the stalkers took the Kings. ");
+        n += fmt_str(epi + n, (int)sizeof(epi) - n, "%s",
+                     flag_get("tommy_spared") ? "Tommy Kowalski turned his laundromat into a shelter. He never did pay Marcus the rest. "
+                                              : "Nobody has seen Tommy Kowalski since the night the sky opened. ");
+        fmt_str(epi + n, (int)sizeof(epi) - n, "%s", "There are more ships beyond the clouds. Damian Cross is going up to meet them.");
+        float eh = ui_text_wrapped(FONT_UI, W * 0.5f, y, 28 * s, W * 0.62f, epi, kWhite, ALIGN_CENTER);
+        y += eh + 120 * s;
     }
     for (int i = 0; i < ARRAY_COUNT(g_credits); i++) {
         bool head = i == 0;

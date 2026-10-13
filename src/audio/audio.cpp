@@ -71,7 +71,7 @@ struct OnePole {
 };
 
 struct Biquad {
-    float b0, b1, b2, a1, a2, x1, x2, y1, y2;
+    float b0 = 1, b1 = 0, b2 = 0, a1 = 0, a2 = 0, x1 = 0, x2 = 0, y1 = 0, y2 = 0;
     void bandpass(float f, float q) {
         float w = TAU_F * f / SR, al = sinf(w) / (2 * q), c = cosf(w);
         float a0 = 1 + al;

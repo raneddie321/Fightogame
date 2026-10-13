@@ -451,6 +451,8 @@ void actors_render() {
         di.model = a.ragdoll ? mat4_identity() : a.world;
         di.bones = a.skin;
         di.boneCount = B_COUNT;
+        di.cullCenter = a.pos + vec3(0, a.height * 0.5f, 0);
+        di.cullRadius = fmaxf(a.height, 1.0f) * 1.3f;
         renderer_submit(di);
         if (a.state != AS_VEHICLE || i == PLAYER) weapon_render(a);
         // Alien glow lights

@@ -425,7 +425,7 @@ static void hit_pedestrians(int vi, Vehicle& v) {
                 v.blood = fminf(1.0f, v.blood + 0.35f);
                 audio_play_at(SND_BODYFALL, a.pos, 1.0f, 0.8f);
                 if (fx_gore_level() > 0) {
-                    Decal* sm = fx_decal(DT_SMEAR, vec3(a.pos.x, world_particle_ground(a.pos) + 0.015f, a.pos.z) + flat(v.vel) * 0.15f, vec3(0, 1, 0), g.rng.range(1.0f, 2.2f), vec3(0.32f, 0.01f, 0.01f), g.rng.f01());
+                    Decal* sm = fx_decal(DT_SMEAR, vec3(a.pos.x, world_particle_ground(a.pos) + 0.015f, a.pos.z) + flat(v.vel) * 0.15f, vec3(0, 1, 0), g.rng.range(1.0f, 2.2f), vec3(0.36f, 0.012f, 0.01f), g.rng.f01());
                     if (sm) { sm->tangent = normalize(flat(v.vel)); sm->sizeX = 0.25f; }
                 }
                 if (v.driver == PLAYER && a.faction != FAC_ALIEN) wanted_crime(CRIME_VEHICLE_HIT, a.pos, false);

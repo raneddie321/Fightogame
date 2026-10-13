@@ -14,7 +14,7 @@ struct MissionDef {
     char desc[220];
     char startLm[24];
     float startDx, startDz;
-    int requires;
+    int requiresId;
     int requiresPhase;
     int reward;
     int phaseAfter;
@@ -63,6 +63,7 @@ static MissionRun R;
 static int g_cur = -1;
 
 int mission_count() { return g_defCount; }
+int mission_id(int i) { return (i >= 0 && i < g_defCount) ? g_defs[i].id : -1; }
 const char* mission_name(int i) { return g_defs[i].title; }
 const char* mission_desc(int i) { return g_defs[i].desc; }
 bool mission_active() { return g_cur >= 0; }
@@ -86,15 +87,18 @@ bool mission_marker(vec3* pos) {
 }
 
 static bool mission_done(int i) { return (g.pd.missionsDone >> (g_defs[i].id & 31)) & 1u; }
+bool mission_is_done(int i) { return i >= 0 && i < g_defCount && mission_done(i); }
+bool mission_is_side(int i) { return i >= 0 && i < g_defCount && g_defs[i].side; }
+bool mission_is_hidden(int i) { return i >= 0 && i < g_defCount && g_defs[i].hidden; }
 
 bool mission_available(int i) {
     const MissionDef& d = g_defs[i];
     if (d.hidden) return false;
     if (!d.repeatable && mission_done(i)) return false;
-    if (d.requires > 0) {
+    if (d.requiresId > 0) {
         bool found = false;
         for (int k = 0; k < g_defCount; k++)
-            if (g_defs[k].id == d.requires) found = mission_done(k);
+            if (g_defs[k].id == d.requiresId) found = mission_done(k);
         if (!found) return false;
     }
     if (g.pd.phase < d.requiresPhase) return false;
@@ -199,7 +203,7 @@ static bool load_mission_file(const char* file) {
         else if (str_eq(op, "title")) str_copy(d.title, sizeof(d.title), script_str(l, 1));
         else if (str_eq(op, "desc")) str_copy(d.desc, sizeof(d.desc), script_str(l, 1));
         else if (str_eq(op, "start")) { str_copy(d.startLm, sizeof(d.startLm), script_str(l, 1)); d.startDx = script_float(l, 2); d.startDz = script_float(l, 3); }
-        else if (str_eq(op, "requires")) d.requires = script_int(l, 1);
+        else if (str_eq(op, "requires")) d.requiresId = script_int(l, 1);
         else if (str_eq(op, "requires_phase")) d.requiresPhase = script_int(l, 1);
         else if (str_eq(op, "reward")) d.reward = script_int(l, 1);
         else if (str_eq(op, "phase_after")) d.phaseAfter = script_int(l, 1);
@@ -414,6 +418,17 @@ static void k_invuln(int i, Actor& a, const ScriptLine& l) { a.invulnerable = sc
 static void k_mode(int i, Actor& a, const ScriptLine& l) { apply_mode(a, script_str(l, 2)); FIGHTO_UNUSED(i); }
 static void k_despawn(int i, Actor& a, const ScriptLine& l) { actor_despawn(i); FIGHTO_UNUSED(a); FIGHTO_UNUSED(l); }
 static void k_face_player(int i, Actor& a, const ScriptLine& l) { actor_face(a, g.actors[PLAYER].pos, 100.0f, 1.0f); FIGHTO_UNUSED(i); FIGHTO_UNUSED(l); }
+static void k_name(int i, Actor& a, const ScriptLine& l) { str_copy(a.name, sizeof(a.name), script_str(l, 2)); FIGHTO_UNUSED(i); }
+static void k_health(int i, Actor& a, const ScriptLine& l) { a.maxHealth = a.health = script_float(l, 2, a.maxHealth); FIGHTO_UNUSED(i); }
+static void k_slay(int i, Actor& a, const ScriptLine& l) {
+    // Scripted execution (e.g. operatives gunning down Varga's crew): a real kill with full gore
+    if (!actor_alive(a)) return;
+    a.invulnerable = false;
+    a.nonLethal = false;
+    vec3 dir = normalize(vec3(g.rng.range(-1.0f, 1.0f), 0.0f, g.rng.range(-1.0f, 1.0f)) + vec3(0, 0.001f, 0));
+    combat_damage(i, -1, 99999.0f, actor_head(a), dir, DMG_BULLET, B_HEAD);
+    FIGHTO_UNUSED(l);
+}
 
 static int spawn_from(const ScriptLine& l, int kindIdx, int at, const char* tag, vec3 pos, float yaw) {
     int kind = kind_by_name(script_str(l, kindIdx));
@@ -455,7 +470,7 @@ static bool exec(const ScriptLine& l, float dt) {
             R.cpPos = p.state == AS_VEHICLE && p.vehicle >= 0 ? g.vehicles[p.vehicle].pos : p.pos;
             R.cpYaw = p.yaw;
             R.cpInVehicle = p.state == AS_VEHICLE;
-            R.cpVehicleType = p.vehicle >= 0 ? g.vehicles[p.vehicle].type : VT_SEDAN;
+            R.cpVehicleType = p.vehicle >= 0 ? (int)g.vehicles[p.vehicle].type : (int)VT_SEDAN;
             notify("Checkpoint", vec4(0.7f, 0.9f, 1.0f, 1));
             audio_play(SND_CHECKPOINT, 0.5f);
         }
@@ -489,6 +504,9 @@ static bool exec(const ScriptLine& l, float dt) {
     if (str_eq(op, "mode")) { each_tag(script_str(l, 1), k_mode, l); return true; }
     if (str_eq(op, "despawn")) { each_tag(script_str(l, 1), k_despawn, l); int v = vehicle_find_tag(script_str(l, 1)); if (v >= 0 && g.vehicles[v].driver != PLAYER) vehicle_despawn(v); return true; }
     if (str_eq(op, "face_player")) { each_tag(script_str(l, 1), k_face_player, l); return true; }
+    if (str_eq(op, "name")) { each_tag(script_str(l, 1), k_name, l); return true; }
+    if (str_eq(op, "health")) { each_tag(script_str(l, 1), k_health, l); return true; }
+    if (str_eq(op, "slay")) { if (!R.fastForward) each_tag(script_str(l, 1), k_slay, l); else each_tag(script_str(l, 1), k_despawn, l); return true; }
     if (str_eq(op, "goto_ai")) {
         vec3 pos;
         int n = parse_pos(l, 2, &pos);

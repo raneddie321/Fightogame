@@ -1,0 +1,90 @@
+# FIGHTO cutscenes. Skippable with Esc / Space / Enter / tap. Subtitles via the dialogue system.
+# @id
+# shot <seconds> <fov> <from> <to> <lookFrom> <lookTo>
+#   positions: "@landmark dx dy dz" (world offset) or "P right up forward" (relative to Damian's facing)
+# line <speaker> "<subtitle>"
+# fx flash|shake|shard|explosion|screech|fade|lantern
+
+@intro
+shot 5.5 50 @bus_stop -18 1.6 5.5 @bus_stop -11 1.8 5.0 @bus_stop 0 1.5 0 @bus_stop 0 1.6 0
+fx fade
+line damian "Three years. Same rain. Same street."
+shot 5.5 40 @home -6 1.8 -9 @home -3 1.9 -6 @home 0 3.5 6 @home 0 3.2 6
+line damian "Home sweet home... What the hell happened here?"
+shot 4.5 35 P 0.9 1.75 1.6 P 0.6 1.72 1.4 P 0 1.65 0 P 0 1.65 0
+line damian "Eli. Where are you, little brother?"
+
+@m05_taken
+shot 3.0 45 P 1.5 1.2 2.5 P 1.2 1.1 2.2 P 0 1.0 0 P 0 1.2 0
+fx shard
+line damian "The light... it's inside my head..."
+shot 4.5 50 P 0 6 -4 P 0 8 -6 P 0 0.5 0 P 0 0.5 0
+fx flash
+line kincaid "Target secured. He's alive. Get him on the truck, and somebody find out who those shooters were."
+shot 3.0 60 P 0 0.4 1.2 P 0 0.4 1.0 P 0 2 6 P 0 3 6
+line kincaid "Sleep, Mr. Cross. You're safe now."
+
+@m06_wake
+shot 4.0 60 @aegis_lobby 0 4.5 -3 @aegis_lobby 0 2.0 -2 @aegis_lobby 0 5.9 -8 @aegis_lobby 0 1.7 -10
+fx fade
+line kincaid "Welcome back to the land of the living."
+shot 3.5 45 @aegis_lobby 0.6 1.8 -11.2 @aegis_lobby 0.5 1.8 -11.0 @aegis_lobby 0 1.6 -4 @aegis_lobby 0 1.6 -4
+line damian "Where the hell am I?"
+shot 4.5 55 @aegis_lobby -8 3.0 0 @aegis_lobby -6 2.5 -2 @aegis_lobby 0 3.2 -17 @aegis_lobby 0 3.4 -17
+line kincaid "Two hundred feet under Blackridge. Officially, nowhere."
+
+@m06_globe
+shot 6.0 55 @aegis_briefing 4 2.5 -6 @aegis_briefing 18 3.0 -6 @aegis_briefing 11 3.9 1 @aegis_briefing 11 3.9 1
+line thorne "Every red light on that globe is something that came down. Most of them we buried. Some of them we're still digging up."
+shot 5.0 40 @aegis_briefing 2.5 1.8 5 @aegis_briefing 3 1.8 5.5 @aegis_briefing 4 1.7 8 @aegis_briefing 4 1.7 8
+line thorne "Mr. Cross. Come closer. You've earned the view."
+
+@m07_nest
+shot 5.0 55 @nest 0 2 -18 @nest 0 4 -10 @nest 0 8 16 @nest 0 10 16
+fx screech
+line damian "What... is that?"
+shot 4.5 50 @nest -12 3 10 @nest -8 6 14 @nest 0 12 16 @nest 0 13 16
+line kincaid "A nest. God help us, it's a nest."
+shot 4.5 45 @nest 10 1.5 0 @nest 12 2 4 @nest 14 0.8 20 @nest 12 0.8 22
+line damian "Those are eggs. Hundreds of them."
+
+@m10_sky
+shot 5.0 60 @plaza 0 1.7 6 @plaza 0 1.5 4 @plaza 0 40 -10 @plaza 0 300 -40
+fx shake
+line news "...reports of lights over Liberty Plaza. Authorities urge all residents to stay indoors..."
+shot 6.0 70 @plaza -40 6 30 @plaza -30 8 25 @plaza 0 400 -16 @plaza 0 420 -16
+fx screech
+line damian "That's not a cloud."
+shot 4.0 45 P 0.6 1.75 1.5 P 0.5 1.75 1.3 P 0 1.65 0 P 0 1.7 0
+line kincaid "Damian, it's Kincaid. Whatever you're looking at, it's real. Protect those people."
+
+@m12_thorne
+shot 5.0 55 @aegis_reactor 4 2 2 @aegis_reactor 6 2.5 0 @aegis_reactor 14 6 -15 @aegis_reactor 14 5 -15
+line thorne "Project LANTERN. Our greatest achievement, and our greatest mistake."
+shot 4.0 40 @aegis_reactor 7 1.8 -6.5 @aegis_reactor 7.3 1.8 -6.8 @aegis_reactor 9 1.7 -9 @aegis_reactor 9 1.7 -9
+line thorne "I had hoped you would never find this room."
+
+@m13_overseer
+shot 5.0 50 @nest 0 3 4 @nest 0 6 2 @nest 0 15 16 @nest 0 15 16
+fx screech
+line shard "...singer..."
+shot 4.0 60 @nest 8 12 8 @nest 6 14 10 @nest 0 15 16 @nest 0 15 16
+fx flash
+
+@m14_overseer
+shot 5.0 60 @plaza 0 2 -4 @plaza 0 3 -2 @plaza 0 100 30 @plaza 0 20 22
+fx shake
+line kincaid "Something is coming down from the ship!"
+shot 4.0 45 @plaza -8 2 10 @plaza -7 2.2 11 @plaza 0 2.5 22 @plaza 0 2.5 22
+fx flash
+line overseer "You made our song scream, small singer. Now you will be silent."
+
+@m14_finale
+shot 5.0 55 @plaza 0 1.5 -6 @plaza 0 1.5 -4 @plaza 0 2 -16 @plaza 0 60 -16
+fx lantern
+line okafor "LANTERN is firing! Full reverse signal!"
+shot 6.0 70 @plaza -40 5 40 @plaza -45 6 45 @plaza 0 450 -16 @plaza 0 470 -16
+fx shake
+line kincaid "Direct hit! The ship is going dark!"
+shot 5.0 50 P 0.8 1.7 1.8 P 0.6 1.7 1.5 P 0 1.6 0 P 0 1.7 0
+line eli "Damian... I hear you."

@@ -1,0 +1,54 @@
+# MISSION 10 - FIRST CONTACT
+# The invasion is undeniable: protect civilians, recover the drone core.
+mission 10
+key m10
+title "First Contact"
+desc "At 2:14 a.m. the clouds over Liberty Plaza split open. Protect the civilians trapped in the plaza and recover whatever fell out of the sky."
+start plaza 0 0
+requires 9
+reward 2000
+
+phase 3
+cutscene m10_sky
+music alien
+group civs civilian - 6 @plaza 0 -3 4 civilian fists cower
+spawn maya story civilian @plaza 2 -1 180 civilian fists cower
+name maya "Maya Ortiz"
+protect maya
+group wave1 stalker stalker 5 @plaza 0 22 7 alien claws hostile
+name wave1 "Stalker"
+sound screech
+kill wave1 "Protect the civilians in Liberty Plaza"
+group wave2 tendril tendril 2 @plaza -20 4 3 alien claws hostile
+group wave2 stalker stalker 3 @plaza 20 0 3 alien claws hostile
+name wave2 "Creature"
+sound screech
+kill wave2 "More of them - keep the civilians alive"
+checkpoint
+dialogue m10_evac
+mode civs follow
+mode maya follow
+goto @plaza 52 -68 8 "Lead the civilians to the intersection"
+group ambush stalker stalker 4 @plaza 52 -120 3 alien claws hostile
+name ambush "Stalker"
+sound screech
+kill ambush "Ambush! Protect the group"
+goto @hospital 0 2 8 "Lead the civilians to St. Agnes Hospital"
+mode civs stand
+mode maya stand
+unprotect maya
+dialogue m10_safe
+checkpoint
+goto @meridian 0 -6 6 "A drone came down at Meridian Tower - find it"
+spawn guardian brute brute @meridian 6 -12 180 alien claws hostile
+name guardian "Brute"
+group mdrones drone - 2 @meridian -4 -10 3 alien drone hostile
+name mdrones "Alien Drone"
+music combat
+kill guardian "Kill the brute guarding the wreck"
+kill mdrones "Shoot down the drones"
+music alien
+pickup core @meridian 6 -5 "Recover the drone's data core"
+shard_glow 5
+dialogue m10_core
+end

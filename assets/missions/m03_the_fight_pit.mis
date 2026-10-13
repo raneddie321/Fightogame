@@ -1,0 +1,61 @@
+# MISSION 3 - THE FIGHT PIT
+# Teaches combos, blocking, dodging, stamina and skilled opponents.
+mission 3
+key m03
+title "The Fight Pit"
+desc "Under the Ironworks rail yard there's a ring where money changes hands over broken teeth. Eli was seen there before he vanished. Win, and people start talking."
+start fight_pit 0 0
+requires 2
+reward 750
+
+music tension
+group crowd civilian - 12 @fight_pit 0 31 7 civilian fists spectate
+spawn promoter story civilian @fight_pit -6 8 90 civilian fists stand
+name promoter "Sal the Promoter"
+invulnerable promoter 1
+talk promoter "Sign up [E]" "Sign up with the promoter"
+dialogue m03_signup
+goto @fight_pit 0 20.5 1.8 "Step into the ring"
+notify "Light attacks chain into combos. Mix in F for heavy kicks."
+notify "Blocking (RMB) and dodging (Ctrl) cost stamina - watch the yellow bar."
+spawn f1 fighter fighter @fight_pit 0 26 180 fighter fists hold
+name f1 "Joey 'The Hammer' Rizzo"
+nonlethal f1
+hostile f1
+sound cheer
+say announcer "Round one! Fresh meat versus The Hammer!"
+defeat f1 "Round 1: Knock out Joey Rizzo"
+pit_win
+heal
+checkpoint
+dialogue m03_round2
+spawn f2 fighter fighter @fight_pit -2 26 180 fighter fists hold
+spawn f2 fighter fighter @fight_pit 2 26 180 fighter fists hold
+name f2 "Delgado Twin"
+nonlethal f2
+hostile f2
+sound cheer
+defeat f2 "Round 2: Beat the Delgado twins"
+pit_win
+heal
+checkpoint
+dialogue m03_brick
+spawn brick fighter brick @fight_pit 0 26 180 fighter fists hold
+name brick "'Brick' Halloran"
+health brick 260
+nonlethal brick
+hostile brick
+music combat
+sound cheer
+defeat brick "Final: Put Brick Halloran on the canvas"
+pit_win
+sound cheer
+music calm
+dialogue m03_win
+spawn brick_up story brick @fight_pit 3 22 200 fighter fists stand
+name brick_up "'Brick' Halloran"
+despawn brick
+talk brick_up "Talk [E]" "Talk to Brick"
+dialogue m03_brick_talk
+evidence 2 @fight_pit 23 36
+end

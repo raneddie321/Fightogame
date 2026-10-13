@@ -1,0 +1,158 @@
+# FIGHTO - Act II dialogue (missions 6-10). Format: speaker: line
+
+@m06_kincaid
+kincaid: Easy. You've been out for nine hours. Nobody here is going to hurt you.
+damian: The last people who said that were wearing masks and carrying rifles.
+kincaid: Those weren't my people. My people pulled you out of that warehouse before they finished the job.
+kincaid: Commander Ava Kincaid. A.E.G.I.S. field operations.
+damian: A.E.G.I.S. What does that stand for?
+kincaid: Nobody remembers what the letters mean anymore. Only what we do.
+kincaid: That stone you picked up glowed brighter than anything our sensors have recorded. Walk with me. The Director wants to meet you.
+
+@m06_thorne
+thorne: Mr. Cross. Elias Thorne. I run this facility, and a great many others you will never see.
+thorne: For sixty years A.E.G.I.S. has protected this planet from things governments cannot admit exist.
+thorne: The object you took from Halberd is called a Shard. It fell to Earth long before there were cities to fall on.
+thorne: We have recovered eleven. None of them has ever responded to a human being. Until last night.
+damian: Then I want to know why. And I want to know where my brother is.
+thorne: Of course. Dr. Okafor will examine the Shard. Then we can discuss what you want, and what we need.
+
+@m06_okafor
+okafor: So you're the one. Imani Okafor, xenotechnology. Don't worry, I don't bite. The tanks might.
+okafor: Put the Shard on the scanner bed. I want to see what it does when you're standing next to it.
+
+@m06_scan
+okafor: Oh. Oh, that's... that's not possible.
+okafor: Its resonance is locked to your bioelectric field. It's not reacting to you. It's bonded to you.
+okafor: The composition isn't on any periodic table. It isn't human technology, Mr. Cross. It isn't from anywhere near here.
+thorne: Which makes you the most valuable man in Blackridge.
+thorne: You have a criminal's instincts, a fighter's body, and the only working key to a lock we have spent sixty years trying to open.
+thorne: Work for A.E.G.I.S. Training, protection, resources. And our full assistance in locating Eli.
+
+@m06_join
+damian: Fine. I'll work for you. But the moment you stop looking for Eli, I'm gone.
+thorne: That seems fair. Commander Kincaid will see to your training. Welcome to A.E.G.I.S., Mr. Cross.
+
+@m06_demand
+damian: Before I do anything for you, tell me where Eli is.
+thorne: If I knew, Mr. Cross, he would already be here.
+kincaid: Director -
+thorne: Commander. Mr. Cross has had a long night. Get him equipped.
+kincaid: ...You heard him. Let's get you an armory badge.
+
+@m07_brief
+kincaid: The Ravager was built for soldiers. The Arc Carbine was built for things that aren't soldiers.
+kincaid: Three training drones. Live fire. They shoot back, so don't stand still.
+damian: Live fire. In a training exercise.
+kincaid: Out there, nothing is a training exercise. Better you learn that in here.
+
+@m07_pass
+kincaid: Not bad for a car thief.
+kincaid: And just in time. A city maintenance crew went into the Ironworks storm drain six hours ago. They stopped answering their radios.
+kincaid: The readings down there match the readings around your Shard. You're coming with me.
+
+@m07_hatch
+kincaid: This hatch leads to the old storm drain under Ironworks. Stay behind me, and don't touch anything that moves.
+damian: Anything that moves?
+kincaid: You'll see.
+
+@m07_bodies
+damian: Kincaid. Over here. What's left of the crew.
+kincaid: Claw marks. Deep ones. Something dragged them further down.
+kincaid: Weapons up. Whatever did this is still close.
+
+@m07_retreat
+kincaid: Command, this is Kincaid. We have a nest. Repeat, a nest under Ironworks.
+kincaid: There's something at the center. Some kind of pylon. It's... broadcasting.
+damian: My Shard's singing along with it.
+kincaid: Then we are leaving. Right now. We come back with an army, not a car thief and a carbine.
+
+@m08_okafor
+okafor: Keep your voice down. The cameras in here report straight to the Director.
+okafor: I ran the Shard's frequency against every signal in our archive. I found a match.
+okafor: A transmission from 2019, logged under a project called LANTERN. Every file about it is sealed. Thorne's personal clearance.
+okafor: I have codes that will get you into the Archive Vault. If anyone asks, you were lost.
+damian: Why are you helping me?
+okafor: Because I helped build some of those tanks, and nobody ever told me what they were for.
+
+@m08_files
+damian: Project LANTERN. 2019.
+damian: "Artifact cluster recovered from the Arctic site used to amplify a directed transmission into deep space. Reply received after 41 days."
+damian: They called something. On purpose. And something called back.
+damian: "Subject E. Cross. Exposure event at Halberd Shipping. Bond confirmed. Transferred to LANTERN chamber. Residence sanitized by Black Lantern team."
+damian: Sanitized. They burned my house. They took Eli.
+
+@m08_chamber
+damian: A containment cell. Cold. Empty.
+damian: Somebody scratched into the glass. "D - they're coming. Don't trust T."
+damian: He was here, in this building, the whole time I was working for them.
+
+@m08_after
+kincaid: Damian! Stand down! I heard gunfire on the restricted level -
+kincaid: Those men... the same gear as the warehouse. They're not on any roster I've ever seen.
+damian: Black Lantern. Thorne's private cleaners. They burned my house, Kincaid. They had my brother in that cell.
+kincaid: That's... no. I've served under Thorne for eleven years.
+damian: Then you've been lied to for eleven years.
+
+@m08_confront
+damian: You knew. LANTERN. The signal. My brother in a glass box down the hall.
+thorne: I know a great many things that would break you, Mr. Cross. That is why I carry them so you don't have to.
+thorne: Your brother volunteered for observation. He was transferred to a secure site for his own protection.
+damian: He scratched a warning into the glass about you.
+thorne: Frightened young men write many things. Go back to work. That is not a request.
+damian: This isn't over, Thorne.
+
+@m08_kincaid
+damian: Here. The LANTERN files. Read them. Then tell me what A.E.G.I.S. is.
+kincaid: ...They called them here. We are the reason they're coming.
+kincaid: And your brother - God. I walked past that door every day.
+kincaid: We don't tell Thorne. Not yet. We find out who else knows, and we find Eli. Together.
+damian: Together. Okay.
+
+@m09_brief
+kincaid: The grid is failing across Blackridge. Something is pulling power out of the city faster than the substations can deliver it.
+kincaid: Radios are going dark. The 4th Precinct has stopped answering. This is not a coincidence.
+kincaid: Ironworks Substation first. If we can reset the relays, we can buy the city some time.
+damian: And the precinct?
+kincaid: One disaster at a time.
+
+@m09_brief_trust
+kincaid: I didn't tell Thorne about LANTERN. I think he knows anyway. He's been in his office all night.
+kincaid: The grid is failing across Blackridge. Something is pulling power out of the city faster than the substations can deliver it.
+kincaid: Ironworks Substation first. If we reset the relays, we buy the city some time. Then the 4th Precinct - they've gone silent.
+damian: I've got your back, Commander.
+kincaid: I know. That's what scares me.
+
+@m09_relays
+kincaid: Relays are reset. Power should be... nothing. Still nothing.
+damian: It's not the grid. Something is drinking the power before it gets anywhere.
+kincaid: The nest. The pylon in the nest is pulling the whole city into it.
+radio: ...any unit... 4th Precinct under attack... things... in the street... please...
+
+@m09_end
+kincaid: Precinct's holding. For now.
+cop: Cross? Damian Cross? I told you not to ask questions on my streets.
+damian: Glad I didn't listen, Dunn.
+cop: ...Yeah. Me too.
+kincaid: Damian. Look up.
+damian: The clouds. They're glowing.
+
+@m10_evac
+kincaid: Damian, the plaza is a kill zone. St. Agnes Hospital is holding an evacuation point north of you.
+kincaid: Get those people moving. Stay with them - those things go after whoever's alone.
+maya: Please, we can't stay here. My little brother's at St. Agnes. He was in surgery when the lights went out.
+damian: Then that's where we're going. Stay close to me.
+
+@m10_safe
+maya: Ricky! Ricky, I'm here!
+maya: Thank you. I don't even know your name.
+damian: Damian. Go inside, and keep away from the windows.
+kincaid: Good work. Now listen - one of their drones went down by Meridian Tower. Okafor wants its core.
+
+@m10_core
+okafor: Damian, I'm reading the core remotely. It's a recorder. It's been listening to everything.
+okafor: There's a voice in the data. Human. Repeating one phrase.
+eli: ...Damian... if you can hear this... I'm on the ship. They brought me up. I can hear all of them...
+damian: Eli. That's Eli.
+okafor: I'm sorry, Damian. The signal's coming from the mothership.
+damian: Then that's where I'm going.

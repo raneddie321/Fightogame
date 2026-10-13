@@ -1,0 +1,62 @@
+# MISSION 14 - LANTERN
+# The final operation against the alien mothership over Liberty Plaza.
+mission 14
+key m14
+title "Lantern"
+desc "LANTERN called them here. Reversed, it can blind the mothership and drag its commander into the open. Hold Liberty Plaza long enough to fire it - and end this."
+start plaza 0 4
+requires 13
+reward 5000
+
+spawn kincaid aegis kincaid @plaza 3 2 200 aegis arc stand
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+spawn okafor story okafor @plaza -3 1 160 aegis fists stand
+name okafor "Dr. Imani Okafor"
+invulnerable okafor 1
+group squad aegis aegis 3 @plaza 0 -2 5 aegis arc guard
+name squad "A.E.G.I.S. Soldier"
+invulnerable squad 1
+talk kincaid "Talk [E]" "Talk to Kincaid"
+dialogue m14_brief
+if_flag marcus_forgiven 1 marcus_helps
+jump arm
+label marcus_helps
+spawn marcus gunman marcus @plaza -6 4 180 aegis shotgun guard
+name marcus "Marcus Reyes"
+invulnerable marcus 1
+say marcus "Figured you'd need somebody who's not wearing a uniform."
+label arm
+interact @plaza 0 -6 2.5 "Arm the LANTERN emitter [E]" "Arm the LANTERN emitter by the fountain"
+shard_glow 6
+fx_shake 1.0
+sound thunder
+music combat
+checkpoint
+group w1 stalker stalker 6 @plaza 0 26 9 alien claws hostile
+name w1 "Stalker"
+sound screech
+survive 30 "Defend the emitter while it charges"
+group w2 tendril tendril 3 @plaza -26 2 4 alien claws hostile
+group w2 stalker stalker 3 @plaza 26 2 4 alien claws hostile
+group w2 drone - 2 @plaza 0 30 5 alien drone hostile
+name w2 "Creature"
+sound screech
+survive 30 "Keep them off the emitter"
+group w3 brute brute 2 @plaza 0 32 6 alien claws hostile
+name w3 "Brute"
+fx_shake 0.8
+kill w3 "Kill the brutes"
+kill w1 "Clear the plaza"
+kill w2 "Clear the plaza"
+checkpoint
+cutscene m14_overseer
+spawn overseer overseer overseer @plaza 0 22 180 alien lance hostile
+name overseer "The Overseer"
+music combat
+kill overseer "Kill the Overseer"
+cutscene m14_finale
+flag lantern_fired 1
+dialogue m14_end
+flag game_complete 1
+end

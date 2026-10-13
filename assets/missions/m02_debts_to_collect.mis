@@ -1,0 +1,60 @@
+# MISSION 2 - DEBTS TO COLLECT
+# Introduces melee combat and the first player choice.
+mission 2
+key m02
+title "Debts to Collect"
+desc "Marcus needs eight hundred dollars from Tommy Kowalski, who runs the Suds City Laundromat. Tommy is late, and Tommy has friends in the Kings."
+start diner 0 -1
+requires 1
+reward 400
+
+spawn marcus story marcus @diner 2 8 200 civilian fists stand
+name marcus "Marcus Reyes"
+invulnerable marcus 1
+talk marcus "Talk [E]" "Talk to Marcus"
+dialogue m02_brief
+goto @laundromat 0 -1 4 "Go to the Suds City Laundromat"
+spawn tommy story tommy @laundromat 2 -1 180 civilian fists stand
+name tommy "Tommy Kowalski"
+invulnerable tommy 1
+talk tommy "Talk [E]" "Talk to Tommy"
+dialogue m02_tommy
+goto_ai tommy @laundromat 34 -3 5.5
+group kings_crew thug kings 3 @laundromat 8 -3 3 kings fists hostile
+name kings_crew "Kings Thug"
+music combat
+notify "LMB: punch combo   F: heavy kick   RMB: block   Ctrl: dodge   Q: lock on"
+kill kings_crew "Deal with Tommy's Kings friends"
+music tension
+checkpoint
+goto_actor tommy 2.5 "Catch Tommy"
+mode tommy cower
+dialogue m02_caught
+choice "Tommy can't pay. What do you do?" "Take what he has and let him go" spare "Make an example of him" beat
+label spare
+dialogue m02_spare
+flag tommy_spared 1
+rep kings 5
+reward 300
+jump report
+label beat
+dialogue m02_beat
+flag tommy_spared 0
+invulnerable tommy 0
+nonlethal tommy
+hostile tommy
+defeat tommy "Teach Tommy a lesson"
+dialogue m02_beat_after
+rep kings -15
+reward 650
+label report
+music calm
+goto @diner 0 -1 4 "Bring the money back to Marcus"
+talk marcus "Talk [E]" "Hand Marcus his money"
+if_flag tommy_spared 1 report_spared
+dialogue m02_report_beat
+jump done
+label report_spared
+dialogue m02_report_spared
+label done
+end

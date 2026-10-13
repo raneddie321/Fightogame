@@ -151,8 +151,13 @@ static void sort_particles(int n) {
     }
 }
 
+float g_fxCoverage[8];
+int g_fxTypeCount[8];
+
 void fx_build_particles(Array<FxVertex>* verts, Array<u32>* inds, vec3 camPos, vec3 right, vec3 up, const Frustum& fr) {
     int n = 0;
+    memset(g_fxCoverage, 0, sizeof(g_fxCoverage));
+    memset(g_fxTypeCount, 0, sizeof(g_fxTypeCount));
     for (int i = 0; i < g_particleCount; i++) {
         const Particle& p = g_particles[i];
         if (!frustum_sphere(fr, p.pos, p.size * 3.0f + length(p.vel) * p.stretch)) continue;
@@ -165,6 +170,12 @@ void fx_build_particles(Array<FxVertex>* verts, Array<u32>* inds, vec3 camPos, v
     inds->reserve(inds->count + n * 6);
     for (int k = 0; k < n; k++) {
         const Particle& p = g_particles[g_sortIdx[k]];
+        {
+            float dd = fmaxf(length(p.pos - camPos), 0.3f);
+            int ty = p.type & 7;
+            g_fxCoverage[ty] += (p.size / dd) * (p.size / dd);
+            g_fxTypeCount[ty]++;
+        }
         float t = 1.0f - p.life / p.maxLife;
         float alpha = p.alpha;
         if (p.type == PT_SMOKE) alpha *= smoothstepf(0.0f, 0.15f, t) * (1.0f - t);

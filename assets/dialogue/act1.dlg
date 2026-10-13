@@ -1,0 +1,170 @@
+# FIGHTO - Act I dialogue (missions 1-5). Format: speaker: line
+
+@m01_home_arrive
+damian: Police tape. Scorch marks up to the second floor.
+damian: Three years I dreamed about walking through that door. Now there's no door.
+damian: Eli was supposed to be here. He'd have been sitting on the porch, pretending he wasn't waiting.
+
+@m01_home_search
+damian: Mom's piano. Melted.
+damian: The fire started inside, not at the wiring. Somebody poured something on these floors.
+damian: That's not an accident. That's a message.
+damian: Eli kept a notebook for everything. If it survived, it's in the back room.
+
+@m01_notebook
+damian: His notebook. Half of it's ash.
+damian: "Night shift, Halberd Shipping, Pier 9. Crate 4471 is warm. Crates aren't supposed to be warm."
+damian: "Told M. about it. He said forget it." M... Marcus.
+
+@m01_cop
+cop: Damian Cross. Heard you were out. Didn't figure you'd come back here.
+damian: It's my house, Dunn. What's left of it.
+cop: Fire marshal says faulty wiring. Case closed.
+damian: And my brother?
+cop: Nineteen-year-old kid takes off after his house burns down. Happens every week in The Blocks.
+cop: Do yourself a favor. Don't go asking questions on my streets.
+
+@m01_marcus
+marcus: Look at this. Damian Cross, back from the dead. Sit down, sit down.
+damian: Where's Eli, Marcus?
+marcus: Straight to it. Okay. I don't know. That's the truth.
+marcus: He was working nights at Halberd Shipping, down in Ironworks. Good money, no questions asked.
+marcus: Then three weeks ago, your house goes up, and he's just... gone. No call. Nothing.
+damian: His notebook says he told you about a warm crate.
+marcus: He said a lot of things. Kid was paranoid. I told him to keep his head down.
+marcus: Look, you've got no money and no place to sleep. I've got both.
+marcus: There's an apartment on the west side of The Blocks. It's yours. Keys, a bed, a TV that mostly works.
+marcus: And when you're ready, I've got work. Real money. Help me, and I'll help you look for him.
+damian: You always did know how to make a deal sound like a favor.
+marcus: That's because it is one, brother.
+
+@m01_safehouse
+damian: Four walls and a lock. Better than a cell.
+damian: Somebody burned my home and took my brother, and everybody in this city wants me to forget it.
+damian: Not happening, Eli. I'm going to find you.
+
+@m02_brief
+marcus: First job. Easy one.
+marcus: Tommy Kowalski runs the Suds City Laundromat, two blocks south. He owes me eight hundred.
+marcus: He's late three times. He's starting to think I'm a charity.
+damian: And if he doesn't have it?
+marcus: Tommy always has it. He just needs to be reminded. Gently, if possible.
+marcus: He drinks with the Kings, though. If his friends get involved, don't be gentle.
+
+@m02_tommy
+tommy: Oh no. No no no. Damian Cross? They let you out?
+damian: Marcus says you owe him eight hundred, Tommy.
+tommy: I - look, business is slow, the machines keep breaking -
+damian: You're wearing a new watch.
+tommy: Hey guys? GUYS! A little help out here!
+
+@m02_caught
+tommy: Okay! Okay! Don't hit me!
+tommy: I got three hundred on me. That's it, that's everything, I swear on my mother.
+damian: That watch says otherwise.
+tommy: It was a gift! From my mother! Who I swore on!
+
+@m02_spare
+damian: Give me the three hundred. Keep the watch.
+tommy: You serious? You're - thank you. Thank you, Damian.
+damian: Pay Marcus the rest by Friday. And Tommy - you hear anything about my brother, you call me.
+tommy: Eli? Yeah. Yeah, I will. I swear.
+
+@m02_beat
+damian: Marcus told me to remind you. I'm going to make sure you remember.
+tommy: Damian, come on, we went to school together!
+
+@m02_beat_after
+tommy: Take it! Take the watch, take everything!
+damian: Pleasure doing business, Tommy.
+thug: The Kings are gonna hear about this, Cross.
+
+@m02_report_spared
+marcus: Three hundred. And Tommy's still got his watch, I hear.
+damian: He'll pay the rest. People pay when they still have something to lose.
+marcus: Huh. Prison made you soft or smart. I'll let you know which.
+marcus: Keep the cut. There's a man at the Fight Pit in Ironworks who saw Eli a few weeks ago.
+
+@m02_report_beat
+marcus: Eight hundred and a Swiss watch. And half the Kings now want your head.
+damian: You said not to be gentle.
+marcus: I said if his friends got involved. Relax. It's good for business when people are scared of you.
+marcus: Keep the cut. There's a man at the Fight Pit in Ironworks who saw Eli a few weeks ago.
+
+@m03_signup
+sal: Fresh face. Big shoulders. Prison posture. You fight?
+damian: I'm looking for somebody. Brick Halloran.
+sal: Everybody's looking for Brick. Brick only talks to people who can stand up to him.
+sal: You want an audience, you climb the ladder. Three rounds. Survive and you meet the champ.
+sal: Rules are simple: no guns, no knives, no crying. Get in the ring.
+
+@m03_round2
+announcer: The new guy stays standing! Pay the man!
+sal: Not bad. Now let's see how you do when they come in pairs.
+sal: Keep your guard up. Two men means two directions to get hit from.
+
+@m03_brick
+announcer: Ladies and gentlemen, the undefeated king of the Ironworks, "BRICK" HALLORAN!
+sal: Brick's never been knocked down. Watch his big swings - block them, or dodge them.
+sal: Your stamina's your life in there. Run dry and he'll put you through the floor.
+
+@m03_win
+announcer: HE DID IT! BRICK HALLORAN IS DOWN! WE HAVE A NEW CHAMPION!
+sal: Kid, you just made me a lot of money. Come back any time. The Pit Ladder's open for you.
+
+@m03_brick_talk
+brick: Nobody's put me down in six years. Who are you?
+damian: Damian Cross. You saw my brother. Eli.
+brick: The skinny kid with the notebook. Yeah. He came in a month ago asking questions.
+brick: About Halberd Shipping. About the crates that come in at night and leave in black vans.
+brick: I told him what I tell everybody: those crates belong to Nikolai Varga. And Varga's buyers aren't from around here.
+brick: That kid was scared, Cross. But he kept asking anyway. Takes guts.
+
+@m04_brief
+marcus: Here's the job. A buyer in Ironworks wants one specific car.
+marcus: Black Vortex GT, sitting in the lot at Silverline Motors in West Hills. Two grand for twenty minutes of work.
+damian: Who's the buyer?
+marcus: Does it matter?
+damian: Brick says Eli was asking about Varga. So yes, it matters.
+marcus: ...It's Varga. Fine. Meet him, get paid, ask him whatever you want. Just deliver the car first.
+marcus: And take this. West Hills has private security, and the Kings have been watching that car.
+
+@m04_phone
+marcus: Damian! Who did you take that car from?
+damian: A car lot. Like you told me.
+marcus: That car belongs to the Kings' boss. He parked it at Silverline as a favor to the owner.
+marcus: The Kings think you stole from them. Get to Varga's before they find you.
+
+@m04_varga
+varga: So you are the man who stole a king's crown. Nikolai Varga.
+varga: Your Marcus sends me a car. You send the Kings a declaration of war. I like it.
+damian: I didn't come for your approval. My brother, Eli. He was asking about you.
+varga: Eli Cross. Yes. A good kid. Bad timing.
+varga: He worked at Halberd, where my special shipments come in. He looked inside a crate he should not have.
+varga: Then he started asking where my crates go. And three days later, men in black came to the docks.
+varga: Not police. Not federal. They do not wear badges, and they do not miss.
+damian: Where are the crates going?
+varga: Tomorrow night, one more crate arrives at Halberd. My buyer pays more than for all the cars in this city.
+varga: Help me take it, and I'll tell you everything I know about the men in black.
+
+@m05_brief
+varga: Halberd Shipping, Pier 9. Container 4471 came in this morning.
+damian: 4471. That number was in my brother's notebook.
+varga: Then it is fate. Dmitri and Lev will go with you. They are good boys - they mostly shoot the right people.
+varga: Take the shotgun. Halberd hired new security this month. They are not friendly.
+
+@m05_inside
+damian: This isn't a shipping warehouse. Look at the power lines.
+damian: Somebody built a lab in here. A cheap one, in a hurry.
+
+@m05_pods
+damian: Tanks. Glowing tanks. What the hell is Varga selling?
+damian: Eli was right. Crates aren't supposed to be warm.
+
+@m05_shard
+shard: ...
+damian: It's... a stone? No. Metal. It's warm. It's humming.
+damian: Wait - it's getting brighter. Like it knows me.
+shard: ...cross... damian... cross...
+damian: Did it just say my name?
+

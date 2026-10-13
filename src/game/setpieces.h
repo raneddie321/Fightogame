@@ -7,3 +7,4 @@ void setpieces_update(float dt);
 void setpieces_render();
 void setpieces_invasion(bool on);
 void setpieces_mothership(bool on);
+void setpieces_lantern_fire();

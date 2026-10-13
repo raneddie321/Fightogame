@@ -1,0 +1,20 @@
+# SIDE JOB - KINGS CORNER (rival gang encounter)
+mission 23
+key s23
+title "Kings Corner"
+desc "The Kings have taken the corner past the laundromat and are shaking down everyone who walks by. Varga will pay to see them gone."
+start laundromat 20 -1
+requires 2
+reward 500
+side
+
+group kc thug kings 3 @laundromat 40 -2 3 kings fists hostile
+group kc gunman kings 2 @laundromat 46 -3 2 kings pistol hostile
+name kc "Kings Soldier"
+music combat
+say thug "This is Kings territory, Cross!"
+kill kc "Clear the Kings off the corner"
+rep kings -10
+rep varga 10
+music calm
+end

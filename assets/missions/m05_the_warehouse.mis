@@ -1,0 +1,66 @@
+# MISSION 5 - THE WAREHOUSE
+# Strange equipment, unidentified operatives and the alien component.
+mission 5
+key m05
+title "The Warehouse"
+desc "Varga wants a crate from Halberd Shipping - the same company Eli worked nights for. Two of Varga's men will ride with you. Whatever is in that crate, somebody wants it badly."
+start chop_shop 0 -10
+requires 4
+reward 1500
+phase_after 1
+
+spawn varga story varga @chop_shop 4 9 200 varga magnum stand
+name varga "Nikolai Varga"
+invulnerable varga 1
+talk varga "Talk [E]" "Talk to Varga"
+dialogue m05_brief
+give_weapon shotgun 18
+notify "Breacher 12 shotgun acquired."
+spawn crew gunman varga_thug @chop_shop -2 -6 0 varga smg follow
+spawn crew gunman varga_thug @chop_shop 2 -6 0 varga pistol follow
+name crew "Varga Crew"
+invulnerable crew 1
+vehicle van van @chop_shop 0 -15 90 0.18 0.2 0.22
+enter_vehicle van "Get in the van"
+rain 1.0
+drive_to @warehouse 0 -8 10 "Drive to Halberd Shipping"
+exit_vehicle "Get out of the van"
+group guards gunman police 4 @warehouse 0 6 7 kings pistol hostile
+name guards "Halberd Security"
+music combat
+kill guards "Take out Halberd's private security"
+music tension
+checkpoint
+goto @warehouse 0 7 3 "Get inside the warehouse"
+dialogue m05_inside
+goto @warehouse 14 42.5 3 "Check out the glowing equipment"
+dialogue m05_pods
+interact @warehouse 25.5 42.6 2.5 "Open the crate [E]" "Open the containment crate"
+shard_glow 4
+fx_flash
+fx_shake 0.5
+flag has_shard 1
+dialogue m05_shard
+group ops operative operative 5 @warehouse -2 8 4 operatives rifle hostile
+name ops "Unidentified Operative"
+say operative "Package confirmed. Clean the site."
+slay crew
+music combat
+checkpoint
+kill ops "Survive the strangers"
+group ops2 operative operative 4 @warehouse -24 34 4 operatives rifle hostile
+name ops2 "Unidentified Operative"
+say operative "Contact in the office aisle! He has the package!"
+kill ops2 "Kill the second team"
+shard_glow 6
+fx_flash
+fx_shake 1.0
+sound thunder
+cutscene m05_taken
+fade_out
+flag aegis_access 1
+teleport @aegis_lobby 0 -4 180
+rain 0.6
+music calm
+fade_in
+end

@@ -187,9 +187,13 @@ int main(int argc, char** argv) {
     XFree(vi);
 
     glXCreateContextAttribsARBProc createCtx = (glXCreateContextAttribsARBProc)glXGetProcAddressARB((const GLubyte*)"glXCreateContextAttribsARB");
-    int ctxAttribs[] = {0x2091 /*MAJOR*/, 3, 0x2092 /*MINOR*/, 3, 0x9126 /*PROFILE_MASK*/, 0x1 /*CORE*/, None};
+    // --gles: request an OpenGL ES 3.0 context instead, to exercise the exact shader and
+    // renderer paths used on Android (GLX_EXT_create_context_es2_profile)
+    bool gles = false;
+    for (int i = 1; i < argc; i++) if (str_eq(argv[i], "--gles")) gles = true;
+    int ctxAttribs[] = {0x2091 /*MAJOR*/, 3, 0x2092 /*MINOR*/, gles ? 0 : 3, 0x9126 /*PROFILE_MASK*/, gles ? 0x4 /*ES2_PROFILE*/ : 0x1 /*CORE*/, None};
     if (createCtx) g_ctx = createCtx(g_dpy, fb, 0, True, ctxAttribs);
-    if (!g_ctx) { log_error("Failed to create an OpenGL 3.3 core context"); return 1; }
+    if (!g_ctx) { log_error(gles ? "Failed to create an OpenGL ES 3.0 context" : "Failed to create an OpenGL 3.3 core context"); return 1; }
     glXMakeCurrent(g_dpy, g_win, g_ctx);
 
     // Invisible cursor for mouse look

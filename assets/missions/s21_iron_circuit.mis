@@ -1,0 +1,23 @@
+# SIDE JOB - IRON CIRCUIT (timed vehicle challenge)
+mission 21
+key s21
+title "Iron Circuit"
+desc "Varga's mechanics run an illegal time trial through the Ironworks. Beat two minutes and the purse is yours."
+start chop_shop 10 -12
+requires 4
+reward 800
+side
+repeatable
+
+vehicle racer sports @chop_shop 10 -15 90 0.9 0.45 0.05
+enter_vehicle racer "Get in the race car"
+notify "Iron Circuit: hit every checkpoint before the timer runs out."
+timer 120
+music chase
+drive_to @warehouse 0 -10 12 "Checkpoint 1: Halberd Shipping"
+drive_to @substation 0 -6 12 "Checkpoint 2: the substation"
+drive_to @fight_pit 0 -8 12 "Checkpoint 3: the Fight Pit"
+drive_to @chop_shop 0 -15 10 "Finish at Varga's Garage"
+timer_stop
+music calm
+end

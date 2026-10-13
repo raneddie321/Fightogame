@@ -1,0 +1,11 @@
+# FIGHTO - side job dialogue. Format: speaker: line
+
+@s24_brief
+okafor: Damian, I've picked up three short-range transmitters around Blackridge. Same frequency as LANTERN.
+okafor: Somebody planted them years ago. Relay points, maybe. Whoever built them didn't want to be found.
+okafor: Bring me their logs. Careful - something is guarding them.
+
+@s24_end
+okafor: These logs go back five years. Someone has been mapping the city's power grid for them.
+okafor: The pylon in the nest wasn't an accident. It was built to plug into Blackridge.
+damian: Somebody laid out a welcome mat.

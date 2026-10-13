@@ -1,0 +1,43 @@
+# MISSION 1 - BACK ON THE BLOCKS
+# Tutorial: movement, camera, interaction, exploration, story objectives.
+mission 1
+key m01
+title "Back on the Blocks"
+desc "Three years inside. Damian steps off the bus on Harlan Street to find the family home burned out and his brother Eli gone. Somebody in The Blocks knows why."
+start bus_stop 0 0
+reward 150
+
+rain 0.85
+music calm
+spawn marcus story marcus @diner 2 8 200 civilian fists stand
+name marcus "Marcus Reyes"
+invulnerable marcus 1
+cutscene intro
+notify "Move: WASD / left stick    Look: mouse / right stick"
+goto @home 0 0 4 "Cross the street to the family home"
+dialogue m01_home_arrive
+notify "Press E (or the touch USE button) to interact"
+interact @home 0 7 2.5 "Search the ruins [E]" "Search the burned house"
+dialogue m01_home_search
+goto @home 3 11 1.6 "Pick up the scorched notebook"
+dialogue m01_notebook
+checkpoint
+spawn cop police police @home 3 -3 0 police pistol stand
+name cop "Officer Dunn"
+invulnerable cop 1
+talk cop "Talk [E]" "A cop is watching you - talk to him"
+dialogue m01_cop
+mode cop wander
+notify "Hold Shift to sprint. Space to jump."
+goto @diner 0 0 4 "Find Marcus at the Lucky Star Diner"
+talk marcus "Talk [E]" "Talk to Marcus inside the diner"
+dialogue m01_marcus
+unlock_safehouse
+give_money 100
+vehicle marcus_car sedan @diner 7 -8 90 0.32 0.3 0.26
+notify "Marcus lent you his old sedan. Press E near a car to get in."
+goto @safehouse -4.2 -8 4 "Go to your new safehouse in The Blocks"
+goto @safehouse 0 0 2 "Go inside"
+dialogue m01_safehouse
+notify "Safehouse unlocked: rest at the bed to save. Tab opens your journal."
+end

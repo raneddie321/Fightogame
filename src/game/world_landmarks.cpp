@@ -500,8 +500,11 @@ void gen_landmarks(Rng& rng) {
     // Remaining evidence spots in alleys across the city
     const int extra[][2] = {{0, 5}, {3, 7}, {6, 1}, {7, 5}, {2, 3}, {5, 7}};
     for (int k = 0; k < ARRAY_COUNT(extra); k++) {
-        vec3 c = block_center(extra[k][0], extra[k][1]);
-        g_world.evidenceSpots.push(c + vec3(rng.range(-12, 12), CURB_H, rng.range(-12, 12)));
+        // On the sidewalk (always walkable), alternating the west and east side of the block
+        int bi = extra[k][0], bj = extra[k][1];
+        float x = (k & 1) ? block_max(bi) - SIDEWALK_W * 0.5f : block_min(bi) + SIDEWALK_W * 0.5f;
+        float z = block_center(bi, bj).z + rng.range(-28.0f, 28.0f);
+        g_world.evidenceSpots.push(vec3(x, CURB_H, z));
     }
 }
 
@@ -666,13 +669,16 @@ void gen_aegis_facility() {
     set_lm(LM_AEGIS_ARCHIVE, "Archive Vault", F(-20, 0, -76), 3.0f, false);
 
     // Restricted reactor shaft (Project LANTERN): x 4..48, z -98..-45
-    fwall(F(4, 0, -45), F(20, 0, -45), H, MAT_METAL_PANEL, vec3(0.25f, 0.2f, 0.2f));
-    fwall(F(28, 0, -45), F(48, 0, -45), H, MAT_METAL_PANEL, vec3(0.25f, 0.2f, 0.2f));
+    fwall(F(4, 0, -45), F(48, 0, -45), H, MAT_METAL_PANEL, vec3(0.25f, 0.2f, 0.2f));
     fwall(F(48, 0, -98), F(48, 0, -45), H, MAT_METAL_PANEL, vec3(0.25f, 0.2f, 0.2f));
     fwall(F(4, 0, -98), F(48, 0, -98), H, MAT_METAL_PANEL, vec3(0.25f, 0.2f, 0.2f));
-    fwall(F(4, 0, -98), F(4, 0, -45), H, MAT_METAL_PANEL, vec3(0.25f, 0.2f, 0.2f));
-    // Corridor end wall with the restricted door to the reactor (via x 20..28 gap on z=-45)
-    fwall(F(-4, 0, -45), F(-4, 0, -45), H, MAT_METAL_PANEL, wallCol);
+    // West wall with the restricted door (z -60..-54) facing the north end of the corridor
+    fwall(F(4, 0, -98), F(4, 0, -60), H, MAT_METAL_PANEL, vec3(0.25f, 0.2f, 0.2f));
+    fwall(F(4, 0, -54), F(4, 0, -45), H, MAT_METAL_PANEL, vec3(0.25f, 0.2f, 0.2f));
+    // Hazard frame and warning light around the restricted door
+    gen_box(F(3.6f, 3.2f, -60.2f), F(4.4f, 3.6f, -53.8f), MAT_PAINT, vec3(1.0f, 0.12f, 0.08f), MF_EMISSIVE | MF_PULSE, 1.0f, 10.0f);
+    gen_light(F(1.5f, 3.0f, -57), 9.0f, vec3(1.0f, 0.15f, 0.1f), 7.0f);
+    sign_text(F(3.75f, 4.2f, -57), 2, 0.5f, "LANTERN", vec3(1.0f, 0.2f, 0.15f), false, false);
     vec3 rc = F(26, 0, -72);
     for (int k = 0; k < 4; k++) {
         float r0 = 6.0f - k * 1.2f;
@@ -689,7 +695,7 @@ void gen_aegis_facility() {
     gen_ellipsoid(rc + vec3(1.5f, 4.0f, -6.0f), vec3(0.35f, 0.35f, 0.35f), MAT_PAINT, vec3(1.0f, 0.1f, 0.05f), MF_EMISSIVE, 1.0f, 25.0f);
     gen_light(rc + vec3(0, 5.0f, -8.0f), 26.0f, vec3(1.0f, 0.15f, 0.08f), 26.0f);
     gen_light(rc + vec3(0, 9.0f, 8.0f), 24.0f, vec3(0.3f, 0.6f, 0.7f), 10.0f);
-    set_lm(LM_AEGIS_REACTOR, "Project LANTERN", F(24, 0, -50), 4.0f, false);
+    set_lm(LM_AEGIS_REACTOR, "Project LANTERN", F(12, 0, -57), 4.0f, false);
 }
 
 // ---------------------------------------------------------------------------

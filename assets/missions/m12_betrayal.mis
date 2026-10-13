@@ -1,0 +1,73 @@
+# MISSION 12 - BETRAYAL
+# Betrayal within A.E.G.I.S.: Thorne's purge and the truth about Eli.
+mission 12
+key m12
+title "Betrayal"
+desc "Director Thorne has locked down the facility and sent Black Lantern to erase Project LANTERN - and everyone who knows about it. Kincaid is still inside."
+start nexus 0 -4
+requires 11
+reward 2500
+
+dialogue m12_call
+sound elevator
+fade_out
+teleport @aegis_lobby 0 -3 180
+fade_in
+music combat
+group lob_ops operative operative 4 @aegis_lobby 0 -16 4 operatives rifle hostile
+name lob_ops "Black Lantern Operative"
+kill lob_ops "Fight through the lobby"
+checkpoint
+spawn kincaid aegis kincaid @aegis_lobby 0 -27 180 aegis arc follow
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+if_flag trust_kincaid 1 k_trust
+dialogue m12_kincaid
+jump k_go
+label k_trust
+dialogue m12_kincaid_trust
+label k_go
+group cor_ops operative operative 5 @aegis_lobby 0 -52 2.5 operatives rifle hostile
+name cor_ops "Black Lantern Operative"
+kill cor_ops "Clear the main corridor"
+spawn okafor story okafor @aegis_lab -10 10 90 aegis fists cower
+name okafor "Dr. Imani Okafor"
+invulnerable okafor 1
+goto @aegis_lab 0 3 3 "Find Dr. Okafor in the lab"
+talk okafor "Talk [E]" "Talk to Okafor"
+dialogue m12_okafor
+pickup lance_case @aegis_lab -6 6 "Take the Void Lance from the containment rack"
+give_weapon lance 24
+notify "Void Lance acquired: alien beam weapon, devastating but slow."
+checkpoint
+group nor_ops operative operative 5 @aegis_reactor -12 -3 2.5 operatives rifle hostile
+name nor_ops "Black Lantern Operative"
+kill nor_ops "Fight your way to Project LANTERN"
+spawn thorne story thorne @aegis_reactor 9 -9 250 aegis magnum stand
+name thorne "Director Elias Thorne"
+invulnerable thorne 1
+group th_guard operative operative 3 @aegis_reactor 6 -4 2 operatives rifle hold
+name th_guard "Thorne's Bodyguard"
+goto @aegis_reactor 0 0 3 "Enter Project LANTERN"
+cutscene m12_thorne
+dialogue m12_thorne
+hostile th_guard
+music combat
+kill th_guard "Kill Thorne's bodyguards"
+choice "Thorne is cornered against the reactor." "Let Kincaid arrest him" arrest "Execute Thorne" execute
+label arrest
+dialogue m12_arrest
+flag thorne_dead 0
+rep aegis 15
+jump fin
+label execute
+invulnerable thorne 0
+hostile thorne
+kill thorne "Kill Thorne"
+dialogue m12_execute
+flag thorne_dead 1
+rep aegis -10
+label fin
+music tension
+dialogue m12_end
+end

@@ -707,8 +707,10 @@ static void draw_items(bool shadowPass) {
         if (!d.bones) continue;
         if (shadowPass && !d.castShadow) continue;
         vec3 c(d.model.m[12], d.model.m[13] + 1.0f, d.model.m[14]);
-        if (shadowPass) { if (dist_xz(c, r->shadowCenter) > r->shadowRadius * 1.5f + 2.0f) continue; }
-        else if (!frustum_sphere(r->frustum, c, 2.5f)) continue;
+        float rad = 2.5f;
+        if (d.cullRadius > 0) { c = d.cullCenter; rad = d.cullRadius; }
+        if (shadowPass) { if (dist_xz(c, r->shadowCenter) > r->shadowRadius * 1.5f + rad) continue; }
+        else if (!frustum_sphere(r->frustum, c, rad)) continue;
         set_mat4(s, "uModel", d.model);
         int l = shader_loc(s, "uBones");
         if (l >= 0) glUniformMatrix4fv(l, min_t(d.boneCount, 24), GL_FALSE, d.bones[0].m);
@@ -805,7 +807,12 @@ static void build_beam(const BeamDraw& b, vec3 camPos) {
     r->fxInds.push(base); r->fxInds.push(base + 2); r->fxInds.push(base + 3);
 }
 
+static double g_subAcc[8];
+static double g_subT;
+static void prof_sub(int slot);
+
 static void render_scene() {
+    prof_sub(-1);
     glBindFramebuffer(GL_FRAMEBUFFER, r->hdrFbo);
     glViewport(0, 0, r->fbW, r->fbH);
     glClearColor(0, 0, 0, 1);
@@ -832,7 +839,9 @@ static void render_scene() {
         if (!frustum_sphere(r->frustum, c.center, c.radius)) continue;
         draw_mesh(&c.mesh);
     }
+    prof_sub(0);
     draw_items(false);
+    prof_sub(1);
 
     // Sky
     Shader* sk = &r->sky;
@@ -844,6 +853,7 @@ static void render_scene() {
     glBindVertexArray(r->fsVao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     r->drawCalls++;
+    prof_sub(2);
 
     // Transparent effects: premultiplied alpha blending
     glEnable(GL_BLEND);
@@ -863,6 +873,7 @@ static void render_scene() {
         upload_fx_and_draw(GL_TRIANGLES);
         glDisable(GL_POLYGON_OFFSET_FILL);
     }
+    prof_sub(3);
 
     // Volumetric beams (additive through premultiplied alpha = 0)
     r->fxVerts.clear();
@@ -880,6 +891,7 @@ static void render_scene() {
         set_frame_uniforms(&r->beam);
         upload_fx_and_draw(GL_TRIANGLES);
     }
+    prof_sub(4);
 
     // Particles
     r->fxVerts.clear();
@@ -889,6 +901,7 @@ static void render_scene() {
         set_frame_uniforms(&r->particle);
         upload_fx_and_draw(GL_TRIANGLES);
     }
+    prof_sub(5);
 
     // Rain
     if (r->atm.rain > 0.02f && r->rainVao && r->cam.pos.y > -20.0f) {
@@ -905,6 +918,7 @@ static void render_scene() {
     }
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
+    prof_sub(6);
 }
 
 static void fullscreen() {
@@ -986,11 +1000,53 @@ static void render_post(const PostState& p) {
     fullscreen();
 }
 
+// Optional pass profiling (FIGHTO_PROFILE=1): glFinish between passes, logged every 60 frames.
+static int g_profFrames = -1;  // -1 not yet checked, -2 disabled, >= 0 frames accumulated
+static double g_profAcc[4];
+static void prof_mark(int slot, double* t) {
+    if (g_profFrames < 0) return;
+    glFinish();
+    double now = plat_time_seconds();
+    g_profAcc[slot] += now - *t;
+    *t = now;
+}
+
+static void prof_sub(int slot) {
+    if (g_profFrames < 0) return;
+    glFinish();
+    double now = plat_time_seconds();
+    if (slot >= 0) g_subAcc[slot] += now - g_subT;
+    g_subT = now;
+}
+
 void renderer_end_frame(const PostState& post) {
+    if (g_profFrames == -1) { const char* e = getenv("FIGHTO_PROFILE"); g_profFrames = (e && e[0] == '1') ? 0 : -2; }  // -2: disabled
+    double t = plat_time_seconds();
     upload_lights();
+    if (g_profFrames >= 0) prof_mark(0, &t);
     render_shadows();
+    if (g_profFrames >= 0) prof_mark(1, &t);
     render_scene();
+    if (g_profFrames >= 0) prof_mark(2, &t);
     render_post(post);
+    if (g_profFrames >= 0) {
+        prof_mark(3, &t);
+        if (++g_profFrames >= 60) {
+            log_info("PROFILE ms/frame: lights %.1f shadows %.1f scene %.1f post %.1f | draws %d tris %d",
+                     g_profAcc[0] * 1000.0 / 60, g_profAcc[1] * 1000.0 / 60, g_profAcc[2] * 1000.0 / 60, g_profAcc[3] * 1000.0 / 60, r->drawCalls, r->tris);
+            extern float g_fxCoverage[8];
+            extern int g_fxTypeCount[8];
+            log_info("PROFILE particles by type (count/coverage): smoke %d/%.2f blood %d/%.2f spark %d/%.2f fire %d/%.2f muzzle %d/%.2f streak %d/%.2f ring %d/%.2f ichor %d/%.2f",
+                     g_fxTypeCount[0], g_fxCoverage[0], g_fxTypeCount[1], g_fxCoverage[1], g_fxTypeCount[2], g_fxCoverage[2], g_fxTypeCount[3], g_fxCoverage[3],
+                     g_fxTypeCount[4], g_fxCoverage[4], g_fxTypeCount[5], g_fxCoverage[5], g_fxTypeCount[6], g_fxCoverage[6], g_fxTypeCount[7], g_fxCoverage[7]);
+            log_info("PROFILE scene ms: world %.1f items %.1f sky %.1f decals %.1f beams %.1f particles %.1f rain %.1f",
+                     g_subAcc[0] * 1000.0 / 60, g_subAcc[1] * 1000.0 / 60, g_subAcc[2] * 1000.0 / 60, g_subAcc[3] * 1000.0 / 60,
+                     g_subAcc[4] * 1000.0 / 60, g_subAcc[5] * 1000.0 / 60, g_subAcc[6] * 1000.0 / 60);
+            g_profFrames = 0;
+            memset(g_profAcc, 0, sizeof(g_profAcc));
+            memset(g_subAcc, 0, sizeof(g_subAcc));
+        }
+    }
     glBindVertexArray(0);
     g_bound = 0;
     glUseProgram(0);

@@ -1,0 +1,50 @@
+# MISSION 4 - A SIMPLE JOB
+# Introduces driving, vehicle theft, police pursuit and rival gang ambushes.
+mission 4
+key m04
+title "A Simple Job"
+desc "A buyer in Ironworks will pay two grand for one specific car: a black Vortex GT parked at Silverline Motors in West Hills. Marcus calls it a simple job. Nothing is ever simple."
+start diner 0 -1
+requires 3
+reward 1200
+
+spawn marcus story marcus @diner 2 8 200 civilian fists stand
+name marcus "Marcus Reyes"
+invulnerable marcus 1
+talk marcus "Talk [E]" "Talk to Marcus"
+dialogue m04_brief
+give_weapon pistol 45
+notify "Pistol acquired. RMB aim, LMB fire, R reload, X/Z switch weapons."
+goto @car_lot 0 0 7 "Go to Silverline Motors in West Hills"
+vehicle target sports @car_lot 2 -14 90 0.02 0.02 0.025
+enter_vehicle target "Steal the black Vortex GT"
+wanted 2
+music chase
+say damian "Alarm. Of course there's an alarm."
+notify "Police pursuit! Break line of sight and leave the flashing search zone."
+checkpoint
+lose_wanted "Lose the police"
+music tension
+dialogue m04_phone
+drive_to @chop_shop 0 -40 14 "Drive the car to Varga's Garage in Ironworks"
+group ambush gunman kings 4 @chop_shop 0 -20 9 kings pistol hostile
+name ambush "Kings Gunman"
+music combat
+say thug "That's the boss's car! Light him up!"
+kill ambush "The Kings followed you - take them out"
+music tension
+checkpoint
+drive_to @chop_shop 0 3 5 "Drive the car into the garage"
+exit_vehicle "Get out of the car"
+spawn varga story varga @chop_shop 4 9 200 varga magnum stand
+name varga "Nikolai Varga"
+invulnerable varga 1
+spawn vguard gunman varga_thug @chop_shop 8 7 230 varga smg stand
+spawn vguard gunman varga_thug @chop_shop 0 11 160 varga smg stand
+name vguard "Varga Bodyguard"
+invulnerable vguard 1
+talk varga "Talk [E]" "Meet the buyer"
+dialogue m04_varga
+rep kings -20
+rep varga 15
+end

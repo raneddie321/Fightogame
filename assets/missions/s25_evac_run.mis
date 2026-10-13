@@ -1,0 +1,30 @@
+# SIDE JOB - EVAC RUN (civilian rescue during the invasion)
+mission 25
+key s25
+title "Evac Run"
+desc "Survivors are still hiding in Liberty Plaza. Get them to St. Agnes before the stalkers find them."
+start hospital 0 2
+requires 10
+reward 700
+side
+repeatable
+
+group evac civilian - 3 @plaza 6 -4 3 civilian fists cower
+spawn evac_lead story civilian @plaza 4 -2 180 civilian fists cower
+name evac_lead "Survivor"
+goto @plaza 0 -4 8 "Reach the survivors in Liberty Plaza"
+protect evac_lead
+group ev_al stalker stalker 4 @plaza 0 16 6 alien claws hostile
+name ev_al "Stalker"
+sound screech
+music alien
+kill ev_al "Kill the stalkers"
+mode evac follow
+mode evac_lead follow
+goto @plaza 52 -68 8 "Lead the survivors north"
+goto @hospital 0 2 8 "Get them to St. Agnes Hospital"
+mode evac stand
+mode evac_lead stand
+unprotect evac_lead
+music calm
+end

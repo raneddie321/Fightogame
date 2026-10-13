@@ -1,0 +1,64 @@
+# MISSION 7 - CONTROLLED EXPOSURE
+# Training, then the first field operation against an extraterrestrial threat.
+mission 7
+key m07
+title "Controlled Exposure"
+desc "Kincaid wants to see if Damian can shoot straight before she takes him anywhere real. Then a maintenance crew stops answering their radios in the Ironworks storm drain."
+start aegis_range -3 0
+requires 6
+reward 1000
+
+music tension
+spawn kincaid aegis kincaid @aegis_range 1 2 250 aegis arc stand
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+talk kincaid "Talk [E]" "Report to Commander Kincaid at the range"
+dialogue m07_brief
+give_weapon arc 160
+group drones drone - 3 @aegis_range 24 -12 6 aegis drone hostile
+name drones "Training Drone"
+notify "Hold RMB to aim. Q locks on. The carbine is fully automatic."
+kill drones "Live-fire exercise: destroy the training drones"
+dialogue m07_pass
+checkpoint
+fade_out
+despawn kincaid
+teleport @drain_hatch 0 -2 0
+spawn kincaid aegis kincaid @drain_hatch 2 -2 0 aegis arc follow
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+flag drain_access 1
+rain 1.0
+fade_in
+dialogue m07_hatch
+interact @drain_hatch 0 0 2.5 "Climb down [E]" "Enter the storm drain"
+fade_out
+despawn kincaid
+teleport @nest 0 -134 0
+spawn kincaid aegis kincaid @nest 2 -133 0 aegis arc follow
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+fade_in
+music alien
+evidence 11 @nest 2.5 -120
+goto @nest 0 -100 4 "Follow the drain towards the missing crew"
+dialogue m07_bodies
+group stalkers stalker stalker 3 @nest 0 -78 2.5 alien claws hostile
+name stalkers "Stalker"
+sound screech
+kill stalkers "Kill the creatures"
+checkpoint
+goto @nest 0 -45 4 "Push deeper"
+group stalkers2 stalker stalker 4 @nest 0 -28 2.5 alien claws hostile
+name stalkers2 "Stalker"
+sound screech
+kill stalkers2 "Survive"
+goto @nest 0 -18 4 "Look into the chamber ahead"
+cutscene m07_nest
+dialogue m07_retreat
+fade_out
+despawn kincaid
+teleport @drain_hatch 0 -2 180
+music calm
+fade_in
+end

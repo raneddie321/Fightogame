@@ -600,6 +600,10 @@ int mission_count();
 const char* mission_name(int i);
 const char* mission_desc(int i);
 bool mission_available(int i);
+bool mission_is_done(int i);
+int mission_id(int i);
+bool mission_is_side(int i);
+bool mission_is_hidden(int i);
 vec3 mission_start_pos(int i);
 bool mission_marker(vec3* pos);
 void mission_debug_complete_step();
@@ -658,6 +662,7 @@ void map_render(float x, float y, float w, float h, bool full);
 // game.cpp helpers
 void game_set_screen(int s);
 void game_new_game();
+void game_continue_from_menu();
 void game_respawn_player(bool arrested);
 void game_set_phase(int phase);
 float rep_get(int f);

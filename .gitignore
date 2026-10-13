@@ -7,3 +7,7 @@ android/build/
 *.tmp
 userdata/
 autotest_out/
+# Packaging intermediates (the final dist/FIGHTO.apk and dist/FIGHTO_Windows.zip are release artifacts)
+dist/FIGHTO_Windows/
+*.keystore
+*.jks

@@ -2,6 +2,9 @@
 # against the operating system's windowing/OpenGL/audio libraries.
 cmake_minimum_required(VERSION 3.16)
 project(FIGHTO CXX C)
+if(WIN32)
+  enable_language(RC)
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -22,6 +25,7 @@ if(WIN32)
   set(FIGHTO_PLATFORM_SOURCES
     ${CMAKE_SOURCE_DIR}/src/platform/platform_win32.cpp
     ${CMAKE_SOURCE_DIR}/src/platform/platform_desktop_common.cpp
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_keys.cpp
     ${CMAKE_SOURCE_DIR}/windows/fighto.rc)
   add_executable(fighto WIN32 ${FIGHTO_CORE_SOURCES} ${FIGHTO_PLATFORM_SOURCES})
   target_link_libraries(fighto opengl32 winmm gdi32 user32)
@@ -30,7 +34,8 @@ if(WIN32)
 else()
   set(FIGHTO_PLATFORM_SOURCES
     ${CMAKE_SOURCE_DIR}/src/platform/platform_x11.cpp
-    ${CMAKE_SOURCE_DIR}/src/platform/platform_desktop_common.cpp)
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_desktop_common.cpp
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_keys.cpp)
   add_executable(fighto ${FIGHTO_CORE_SOURCES} ${FIGHTO_PLATFORM_SOURCES})
   target_link_libraries(fighto X11 GL dl pthread m)
 endif()
@@ -45,7 +50,8 @@ if(NOT WIN32 AND EXISTS ${CMAKE_SOURCE_DIR}/tests/unit_tests.cpp)
     ${CMAKE_SOURCE_DIR}/src/core/noise.cpp
     ${CMAKE_SOURCE_DIR}/src/game/save.cpp
     ${CMAKE_SOURCE_DIR}/src/game/script.cpp
-    ${CMAKE_SOURCE_DIR}/src/platform/platform_desktop_common.cpp)
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_desktop_common.cpp
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_keys.cpp)
   target_compile_options(fighto_tests PRIVATE ${FIGHTO_COMMON_FLAGS} -DFIGHTO_UNIT_TESTS=1)
   target_link_libraries(fighto_tests m)
 endif()

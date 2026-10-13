@@ -1,0 +1,121 @@
+# FIGHTO - Act III dialogue (missions 11-14). Format: speaker: line
+
+@m11_varga
+varga: Cross. Of course it's you. Who else would walk into a war for a gangster?
+damian: Who did you sell the Halberd crates to, Varga?
+varga: Nexus Logistics. Very polite people. Paid in cash, never haggled.
+varga: You know who owns Nexus Logistics? Your new friends. A.E.G.I.S. Thorne's black budget.
+varga: Now Thorne is burning everyone who touched a crate. Me. My boys. Anyone.
+varga: One more thing, since I'm dying. The night your house burned, Black Lantern needed an address.
+varga: Marcus Reyes gave it to them.
+damian: Marcus?
+varga: They had his daughter in a van. He talked. Anyone talks.
+
+@m11_spare
+damian: Get up. Get out of this city while there's still a city to get out of.
+varga: Mercy. From you. You are a strange man, Cross.
+varga: If you ever need guns, my people will remember this.
+
+@m11_execute
+damian: That's for Dmitri and Lev. And for every crate.
+
+@m11_marcus
+marcus: Damian. You look like hell. Sit, I'll get you coffee -
+damian: You gave them the address.
+marcus: ...Varga told you.
+marcus: They took Sofia. My little girl. They put her in a van and called me from it.
+marcus: They said they only wanted to talk to Eli. I didn't know they'd burn it. I swear to God I didn't know.
+marcus: I've been trying to make it right ever since. The apartment, the jobs, the money -
+damian: You were paying off your guilt.
+marcus: I was trying to keep you alive long enough to find him. I'm sorry, brother.
+
+@m11_forgive
+damian: If they'd taken Eli to make me talk, I would have told them anything.
+damian: I don't forgive what happened. But I forgive you.
+marcus: ...Thank you. Whatever you need - anything - I'm there.
+
+@m11_leave
+damian: You were my best friend, Marcus. You were his best friend.
+damian: Don't call me. Don't come looking for me. If we meet again, walk the other way.
+marcus: Damian -
+
+@m12_call
+kincaid: Damian, it's Kincaid. Thorne has sealed the facility. Black Lantern is purging the LANTERN records.
+kincaid: And the people. Okafor's still inside. So am I.
+kincaid: The elevator is the only way in. If you're coming, come now.
+
+@m12_kincaid
+kincaid: You came. I wasn't sure you would, after everything.
+damian: You're the only one in this place who never lied to me.
+kincaid: Thorne's in the LANTERN chamber. Let's ask him some questions.
+
+@m12_kincaid_trust
+kincaid: Thanks for coming back for me, partner.
+damian: You trusted me with the truth. I don't forget that.
+kincaid: Thorne's in the LANTERN chamber. Okafor first - she's in the lab, and she's got something for you.
+
+@m12_okafor
+okafor: Damian! Oh thank God. They shot the guards in the lab. Our own guards.
+okafor: Take the Lance from the containment rack. Alien design, our power cell. It hits harder than anything we've built.
+okafor: And Damian - LANTERN can still transmit. If it called them here, maybe reversed, it can hurt them.
+
+@m12_thorne
+thorne: Mr. Cross. You are very persistent. It is your most useful quality, and your most tiresome.
+damian: Where is my brother?
+thorne: Where I sent him. Into the sky.
+thorne: LANTERN called them, yes. I was a younger man. I wanted to know if we were alone. We are not.
+thorne: Their commander made one demand: the bonded one. A human who could carry their song.
+thorne: I gave them your brother to buy this planet time. Twenty days of peace. And you wasted them chasing ghosts.
+kincaid: You traded a nineteen-year-old kid to an alien fleet.
+thorne: I traded one life for eight billion. Kill these two.
+
+@m12_arrest
+kincaid: Elias Thorne, you are relieved of command. On your knees.
+thorne: You think a cell will matter when they come down? You'll beg me for my plan.
+kincaid: I'll take my chances. Damian - you did the right thing.
+
+@m12_execute
+damian: Twenty days of peace. Here's twenty seconds of quiet.
+kincaid: ...I would have done the same thing. God help me, I would have.
+
+@m12_end
+okafor: The LANTERN array is intact. I can reverse the polarity of the transmission.
+okafor: Their ships sing to each other. If we scream into that song, we blind the mothership. Maybe even drag their commander down.
+okafor: But I need to hear their song first. A clean recording, from the source.
+kincaid: The nest under Ironworks. The pylon.
+damian: Then we're going back into the dark.
+
+@m13_brief
+kincaid: Two soldiers. That's all I could find who'd follow me after what happened to Thorne.
+kincaid: Okafor's uplink has to be planted on the pylon itself. It needs time to record the song.
+damian: How much time?
+kincaid: Longer than you'd like. Let's go.
+
+@m13_overseer
+overseer: Small singer. You carry the voice of our dead.
+damian: Who are you?
+overseer: We are the ones who answer. Your kind found the bones of our lost navigator in the ice, and you sang with its voice.
+overseer: A song is an invitation. We came to take back what you stole. The shards. The bonded ones.
+overseer: Your brother sings so beautifully now. Soon you will sing with him.
+damian: Eli is coming home. And you're not getting another one of us.
+
+@m13_eli
+okafor: Uplink complete! I've got the song - all of it. It's... it's beautiful, Damian. And there's a voice inside it.
+eli: Damian. Don't come up here. They're inside my head. They see everything I see.
+eli: But I can see them too. The commander comes down for the song. If you make it scream, it has to come down.
+damian: Hold on, Eli. Just hold on.
+
+@m14_brief
+kincaid: This is it. The LANTERN emitter is set up by the fountain. Okafor's reversed signal is loaded.
+okafor: Once it's armed, it needs a full minute to charge. Every alien in the city will hear it and come for it.
+kincaid: If it fires, the mothership goes blind. And if Eli is right, their commander comes down to stop it.
+damian: Then we stop the commander.
+kincaid: Whatever happens - thank you. For not running.
+
+@m14_end
+kincaid: The ship - it's pulling back! Higher - it's breaking formation!
+okafor: The song's gone silent. All of it. They can't hear each other.
+eli: Damian... it's quiet. For the first time, it's quiet.
+eli: They're not leaving. There are more ships, further out. But now they know we can fight.
+damian: I'm coming for you, Eli. Whatever it takes.
+eli: I know. You always did.

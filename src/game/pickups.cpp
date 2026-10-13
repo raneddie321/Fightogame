@@ -142,7 +142,7 @@ void pickups_render() {
         if (length(p.pos - g.cam.pos) > 80.0f) continue;
         DrawItem di;
         memset(&di, 0, sizeof(di));
-        int t = p.type == PK_WEAPON || p.type == PK_AMMO ? PK_AMMO : p.type;
+        int t = p.type == PK_WEAPON || p.type == PK_AMMO ? (int)PK_AMMO : (int)p.type;
         di.mesh = &g_pickupMesh[t];
         di.model = mat4_trs(p.pos + vec3(0, 0.25f + sinf(p.spin * 2.0f) * 0.06f, 0), quat_axis_angle(vec3(0, 1, 0), p.spin), vec3(1, 1, 1));
         di.tint = vec4(1, 1, 1, 1);

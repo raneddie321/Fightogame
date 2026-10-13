@@ -80,7 +80,7 @@ void plat_set_fullscreen(bool fs) {
 }
 
 void plat_set_vsync(bool on) {
-    wglSwapIntervalEXTProc swap = (wglSwapIntervalEXTProc)wglGetProcAddress("wglSwapIntervalEXT");
+    wglSwapIntervalEXTProc swap = (wglSwapIntervalEXTProc)(void*)wglGetProcAddress("wglSwapIntervalEXT");
     if (swap) swap(on ? 1 : 0);
 }
 
@@ -293,7 +293,7 @@ static bool create_gl_context() {
     HGLRC legacy = wglCreateContext(g_hdc);
     if (!legacy) { log_error("wglCreateContext failed"); return false; }
     wglMakeCurrent(g_hdc, legacy);
-    wglCreateContextAttribsARBProc createAttribs = (wglCreateContextAttribsARBProc)wglGetProcAddress("wglCreateContextAttribsARB");
+    wglCreateContextAttribsARBProc createAttribs = (wglCreateContextAttribsARBProc)(void*)wglGetProcAddress("wglCreateContextAttribsARB");
     if (!createAttribs) { log_error("wglCreateContextAttribsARB unavailable (OpenGL 3.3 required)"); return false; }
     int attribs[] = {0x2091, 3, 0x2092, 3, 0x9126, 0x1, 0};
     g_glrc = createAttribs(g_hdc, 0, attribs);
@@ -317,7 +317,7 @@ int WINAPI WinMain(HINSTANCE inst, HINSTANCE, LPSTR, int) {
     g_opengl32 = LoadLibraryA("opengl32.dll");
     HMODULE xi = LoadLibraryA("xinput1_4.dll");
     if (!xi) xi = LoadLibraryA("xinput9_1_0.dll");
-    if (xi) p_XInputGetState = (XInputGetStateProc)GetProcAddress(xi, "XInputGetState");
+    if (xi) p_XInputGetState = (XInputGetStateProc)(void*)GetProcAddress(xi, "XInputGetState");
 
     WNDCLASSA wc;
     memset(&wc, 0, sizeof(wc));

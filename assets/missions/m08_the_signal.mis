@@ -1,0 +1,54 @@
+# MISSION 8 - THE SIGNAL
+# Evidence of A.E.G.I.S. experiments: Project LANTERN. A choice of who to trust.
+mission 8
+key m08
+title "The Signal"
+desc "Dr. Okafor has found something in the Shard's frequency that she will only talk about in person. Meet her in the Xenotech Lab (elevator at Nexus Logistics)."
+start aegis_lab 3 3
+requires 7
+reward 1000
+
+music tension
+spawn okafor story okafor @aegis_lab 4 6 200 aegis fists stand
+name okafor "Dr. Imani Okafor"
+invulnerable okafor 1
+talk okafor "Talk [E]" "Talk to Dr. Okafor"
+dialogue m08_okafor
+goto @aegis_archive 0 8 3 "Get into the Archive Vault (north-west caves)"
+hold @aegis_archive -4 -1.5 2.5 8 "Download the sealed LANTERN files (hold E at the terminal)"
+evidence 12 @aegis_archive -2 4
+dialogue m08_files
+goto @aegis_archive -2 4 1.6 "Take the printout"
+checkpoint
+goto @aegis_reactor 0 0 3 "Find Project LANTERN (restricted door, north-east)"
+interact @aegis_reactor 8 -7 2.5 "Examine the chamber [E]" "Search the LANTERN chamber"
+shard_glow 4
+dialogue m08_chamber
+group blk operative operative 4 @aegis_reactor -2 -1 2.5 operatives rifle hostile
+name blk "Black Lantern Operative"
+say operative "Black Lantern team in position. Contain Cross. No witnesses."
+music combat
+kill blk "Fight off the operatives - the same men from the warehouse"
+music tension
+spawn kincaid aegis kincaid @aegis_reactor -1 2 120 aegis arc stand
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+dialogue m08_after
+choice "Who do you trust with the truth?" "Confront Thorne" confront "Tell Kincaid everything" tellk
+label confront
+spawn thorne story thorne @aegis_briefing 4 8 210 aegis fists stand
+name thorne "Director Elias Thorne"
+invulnerable thorne 1
+goto @aegis_briefing 0 0 3 "Confront Thorne in the briefing room"
+talk thorne "Confront [E]" "Confront the Director"
+dialogue m08_confront
+flag confronted_thorne 1
+rep aegis -10
+jump done
+label tellk
+talk kincaid "Talk [E]" "Tell Kincaid what you found"
+dialogue m08_kincaid
+flag trust_kincaid 1
+rep aegis 5
+label done
+end

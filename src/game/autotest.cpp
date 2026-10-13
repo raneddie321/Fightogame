@@ -30,7 +30,10 @@ static vec3 g_startPos;
 static float g_startYaw;
 static int g_missionIdx;
 static int g_missionFrames;
+static double g_missionT0;
 static int g_counter;
+static const char* g_only;
+static double g_stepStart;
 
 static void report(const char* f, ...) {
     va_list ap;
@@ -274,9 +277,10 @@ static int st_vehicle_enter(int f) {
     if (f == 0) {
         clear_test_actors();
         player_select_weapon(W_FISTS);
-        vec3 rp = world_nearest_road_point(landmark_pos(LM_PLAZA) + vec3(0, 0, 60));
-        player_teleport(rp + vec3(4.2f, 0, 0), 0);
-        g_vehicle = vehicle_spawn(VT_MUSCLE, rp + vec3(1.0f, 0, 0), 0, vec3(0.6f, 0.05f, 0.05f), VAI_PARKED);
+        // Right-hand lane of the north-south avenue west of Liberty Plaza, heading +Z
+        vec3 lane(road_x(4) - 3.6f, 0.0f, block_center(4, 3).z - 30.0f);
+        player_teleport(lane + vec3(3.0f, 0, 0), 0);
+        g_vehicle = vehicle_spawn(VT_MUSCLE, lane, 0, vec3(0.6f, 0.05f, 0.05f), VAI_PARKED);
         if (g_vehicle < 0) return FAIL;
         str_copy(g.vehicles[g_vehicle].tag, 16, "autotest");
     }
@@ -337,8 +341,17 @@ static bool mission_bit(int i) {
 static int st_missions(int f) {
     FIGHTO_UNUSED(mission_bit);
     if (f == 0) {
-        g_missionIdx = 0;
+        const char* first = getenv("FIGHTO_AUTOTEST_MISSION");
+        g_missionIdx = first ? clamp_t(str_to_int(first), 0, 31) : 0;
         g_missionFrames = 0;
+        mission_abort();
+        // Optional: treat earlier missions as completed so a later mission can be tested directly
+        const char* unlock = getenv("FIGHTO_AUTOTEST_UNLOCK");
+        if (unlock && unlock[0] == '1') {
+            for (int k = 0; k < g_missionIdx; k++) if (!mission_is_side(k)) g.pd.missionsDone |= 1u << (mission_id(k) & 31);
+            if (g_missionIdx >= 5) game_set_phase(1);
+            if (g_missionIdx >= 6) flag_set("aegis_access", 1);
+        }
         clear_test_actors();
         P().invulnerable = true;
         if (P().state == AS_VEHICLE) player_exit_vehicle();
@@ -372,6 +385,7 @@ static int st_missions(int f) {
         player_teleport(sp + vec3(1.0f, 0, 1.0f), 0);
         mission_start(g_missionIdx);
         g_missionFrames = 1;
+        g_missionT0 = plat_time_seconds();
         return RUNNING;
     }
     g_missionFrames++;
@@ -382,7 +396,7 @@ static int st_missions(int f) {
     }
     if (g_missionFrames % 12 == 0) mission_debug_complete_step();
     if (!mission_active() && g_missionFrames > 1) {
-        report("  mission %d '%s' completed in %d frames", g_missionIdx, mission_name(g_missionIdx), g_missionFrames);
+        report("  mission %d '%s' completed in %d frames (%.1f s)", g_missionIdx, mission_name(g_missionIdx), g_missionFrames, plat_time_seconds() - g_missionT0);
         g_pass++;
         g_missionIdx++;
         g_missionFrames = 0;
@@ -512,6 +526,43 @@ static int st_audio(int f) {
     return ok == SND_COUNT ? PASS : FAIL;
 }
 
+// Measures real frame times at representative locations (software GL in CI is slow; GPUs are far faster)
+static double g_lastFrameT;
+static double g_probeAcc;
+static int g_probeN;
+static int st_perf(int f) {
+    struct Spot { int lm; vec3 off; float yaw; const char* name; };
+    static const Spot spots[] = {
+        {LM_PLAZA, vec3(0, 0, 10), PI_F, "Liberty Plaza (downtown)"},
+        {LM_BUS_STOP, vec3(0, 0, 0), PI_F * 0.5f, "Harlan St. (The Blocks)"},
+        {LM_FIGHT_PIT, vec3(0, 0, 12), 0, "Fight Pit interior"},
+        {LM_AEGIS_BRIEFING, vec3(0, 0, 0), PI_F * 0.5f, "A.E.G.I.S. briefing room"},
+        {LM_DRAIN_NEST, vec3(0, 0, -10), 0, "Alien nest"},
+    };
+    const int per = 24;
+    int idx = f / per, k = f % per;
+    double now = plat_time_seconds();
+    if (idx >= ARRAY_COUNT(spots)) { camera_release(); return PASS; }
+    if (k == 0) {
+        const Spot& sp = spots[idx];
+        vec3 p = landmark_pos(sp.lm) + sp.off;
+        if (P().state == AS_VEHICLE) player_exit_vehicle();
+        player_teleport(p, sp.yaw);
+        g_probeAcc = 0;
+        g_probeN = 0;
+    } else if (k >= 8) {
+        g_probeAcc += now - g_lastFrameT;
+        g_probeN++;
+    }
+    g_lastFrameT = now;
+    if (k == per - 2) {
+        static const char* shots[] = {"perf_plaza", "perf_blocks", "perf_pit", "perf_briefing", "perf_nest"};
+        shot(shots[idx]);
+    }
+    if (k == per - 1) report("  perf: %s: %.1f ms/frame (%d draws, %d tris)", spots[idx].name, g_probeAcc * 1000.0 / fmax(1, g_probeN), renderer_draw_calls(), renderer_triangles());
+    return RUNNING;
+}
+
 static const Step g_steps[] = {
     {"Boot to main menu", st_boot, 60},
     {"New game starts mission 1", st_new_game, 80},
@@ -535,6 +586,7 @@ static const Step g_steps[] = {
     {"Settings persistence", st_settings, 10},
     {"Menus & overlays", st_menus, 140},
     {"Audio synthesis", st_audio, 10},
+    {"Performance probe", st_perf, 200},
 };
 
 void autotest_begin(const GameLaunchOptions* opt) {
@@ -545,15 +597,26 @@ void autotest_begin(const GameLaunchOptions* opt) {
     g_reportLen = 0;
     g_pass = g_fail = 0;
     g_startTime = plat_time_seconds();
+    g_only = getenv("FIGHTO_AUTOTEST_ONLY");
     report("FIGHTO automated gameplay test");
     report("Platform: %s", plat_name());
+}
+
+
+static bool step_selected(int i) {
+    if (!g_only || !g_only[0]) return true;
+    if (i <= 2) return true;  // boot + new game are always needed
+    // Case-sensitive substring match on the step name
+    return strstr(g_steps[i].name, g_only) != 0;
 }
 
 void autotest_frame(float dt) {
     FIGHTO_UNUSED(dt);
     if (g_done) return;
+    while (g_step < ARRAY_COUNT(g_steps) && g_frame == 0 && !step_selected(g_step)) g_step++;
+    if (g_step >= ARRAY_COUNT(g_steps)) { plat_write_user_file("autotest_report.txt", g_report, (size_t)g_reportLen); g_done = true; return; }
     const Step& s = g_steps[g_step];
-    if (g_frame == 0) g_msg[0] = 0;
+    if (g_frame == 0) { g_msg[0] = 0; g_stepStart = plat_time_seconds(); }
     int r = s.fn(g_frame);
     g_frame++;
     if (r == RUNNING && g_frame > s.timeout) {
@@ -562,7 +625,7 @@ void autotest_frame(float dt) {
     }
     if (r != RUNNING) {
         if (r == PASS) g_pass++; else g_fail++;
-        report("[%s] %s%s%s", r == PASS ? "PASS" : "FAIL", s.name, g_msg[0] ? " - " : "", g_msg);
+        report("[%s] %s%s%s  (%d frames, %.1f s)", r == PASS ? "PASS" : "FAIL", s.name, g_msg[0] ? " - " : "", g_msg, g_frame, plat_time_seconds() - g_stepStart);
         g_step++;
         g_frame = 0;
         if (g_step >= ARRAY_COUNT(g_steps)) {

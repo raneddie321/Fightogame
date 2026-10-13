@@ -1,0 +1,82 @@
+# MISSION 9 - BLACKOUT
+# The grid fails, communications drop and the city enters a state of emergency.
+mission 9
+key m09
+title "Blackout"
+desc "Something is pulling power out of Blackridge. Radios are dead, the lights are going out block by block, and the 4th Precinct has stopped answering."
+start aegis_briefing 0 0
+requires 8
+reward 1500
+
+spawn kincaid aegis kincaid @aegis_briefing 3 3 230 aegis arc stand
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+talk kincaid "Talk [E]" "Talk to Kincaid"
+if_flag trust_kincaid 1 brief_trust
+dialogue m09_brief
+jump go
+label brief_trust
+dialogue m09_brief_trust
+label go
+phase 2
+fx_shake 0.8
+sound thunder
+fade_out
+despawn kincaid
+teleport @nexus 0 -30 180
+vehicle interceptor aegis @nexus 3 -36 90
+spawn kincaid aegis kincaid @nexus 2 -30 180 aegis arc follow
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+rain 1.0
+music tension
+fade_in
+notify "BLACKOUT: street lights and signals are down across the city."
+enter_vehicle interceptor "Get in the A.E.G.I.S. interceptor"
+drive_to @substation 0 -6 10 "Drive to the Ironworks Substation"
+exit_vehicle "Get out"
+group sub_aliens stalker stalker 5 @substation 0 16 8 alien claws hostile
+name sub_aliens "Stalker"
+music alien
+sound screech
+kill sub_aliens "Clear the substation"
+checkpoint
+interact @substation -19 11.8 2 "Reset relay [E]" "Reset relay 1 of 3"
+group sub2 stalker stalker 3 @substation 10 30 6 alien claws hostile
+name sub2 "Stalker"
+sound screech
+interact @substation 0 11.8 2 "Reset relay [E]" "Reset relay 2 of 3"
+interact @substation 19 11.8 2 "Reset relay [E]" "Reset relay 3 of 3"
+kill sub2 "Kill the stalkers"
+spawn sbrute brute brute @substation 0 40 180 alien claws hostile
+name sbrute "Brute"
+fx_shake 0.6
+say kincaid "Big one! Keep moving and hit it from range!"
+kill sbrute "Kill the brute"
+dialogue m09_relays
+checkpoint
+music tension
+drive_to @police 0 -8 12 "The 4th Precinct is under attack - get there"
+group cops police police 4 @police 0 -2 5 police pistol guard
+name cops "BRPD Officer"
+if_flag tommy_spared 1 tommy_help
+jump defend
+label tommy_help
+spawn tommy story tommy @police 5 -4 180 civilian shotgun follow
+name tommy "Tommy Kowalski"
+invulnerable tommy 1
+say tommy "Damian! You let me walk once. Figured I owe you one."
+label defend
+group prec stalker stalker 5 @police 0 -28 8 alien claws hostile
+name prec "Stalker"
+music alien
+sound screech
+survive 20 "Defend the 4th Precinct"
+group prec tendril tendril 2 @police 18 -24 4 alien claws hostile
+group prec stalker stalker 3 @police -18 -24 4 alien claws hostile
+sound screech
+survive 20 "Hold the line"
+kill prec "Kill the remaining creatures"
+music tension
+dialogue m09_end
+end

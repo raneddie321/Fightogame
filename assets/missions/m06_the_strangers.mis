@@ -1,0 +1,56 @@
+# MISSION 6 - THE STRANGERS
+# A.E.G.I.S. reveals itself. The Shard is not human technology.
+mission 6
+key m06
+title "The Strangers"
+desc "Damian wakes up two hundred feet under Blackridge, in a facility that does not exist, run by people who know his name, his record and his brother."
+start aegis_lobby 0 -6
+requires 5
+requires_phase 1
+reward 500
+
+music tension
+spawn kincaid aegis kincaid @aegis_lobby 0 -10 0 aegis arc stand
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+cutscene m06_wake
+talk kincaid "Talk [E]" "Talk to the woman in black"
+dialogue m06_kincaid
+mode kincaid follow
+goto @aegis_lobby 0 -29 2.5 "Walk through the security scanner"
+shard_glow 2
+say tech "Scan complete. Subject is carrying an anomalous signature. Director has been notified."
+spawn thorne story thorne @aegis_briefing 4 8 210 aegis fists stand
+name thorne "Director Elias Thorne"
+invulnerable thorne 1
+goto @aegis_briefing 0 0 3 "Go to the briefing room"
+cutscene m06_globe
+talk thorne "Listen [E]" "Speak with the Director"
+dialogue m06_thorne
+spawn okafor story okafor @aegis_lab 4 6 200 aegis fists stand
+name okafor "Dr. Imani Okafor"
+invulnerable okafor 1
+goto @aegis_lab 0 3 3 "Go to the Xenotech Laboratory"
+talk okafor "Talk [E]" "Meet Dr. Okafor"
+dialogue m06_okafor
+checkpoint
+interact @aegis_lab 0 0 2.5 "Place the Shard on the scanner [E]" "Let Dr. Okafor scan the Shard"
+shard_glow 5
+fx_flash
+fx_shake 0.6
+sound screech
+dialogue m06_scan
+choice "Thorne is waiting for an answer." "Work for A.E.G.I.S." join "Demand to know where Eli is" demand
+label join
+dialogue m06_join
+rep aegis 10
+jump cont
+label demand
+dialogue m06_demand
+flag pressed_thorne 1
+label cont
+give_weapon arc 120
+armor 50
+notify "A.E.G.I.S. Arc Carbine issued. Armory upgrades unlocked (Training Range, west room)."
+notify "The elevator at Nexus Logistics now takes you between the city and the facility."
+end

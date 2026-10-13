@@ -2,6 +2,7 @@
 #include "game.h"
 #include "script.h"
 #include "../audio/audio.h"
+#include "setpieces.h"
 
 struct Shot {
     float duration;
@@ -114,6 +115,14 @@ static void start_shot() {
     else if (str_eq(s.fx, "explosion")) { audio_play(SND_EXPLOSION, 1.0f); camera_shake(1.0f); }
     else if (str_eq(s.fx, "screech")) audio_play(SND_ALIEN_SCREECH, 1.0f);
     else if (str_eq(s.fx, "fade")) { g.fade = 1.0f; g.fadeTarget = 0.0f; }
+    else if (str_eq(s.fx, "lantern")) {
+        setpieces_lantern_fire();
+        flag_set("lantern_fired", 1);
+        g.whiteFlash = 1.0f;
+        camera_shake(1.2f);
+        audio_play(SND_EXPLOSION, 1.0f);
+        audio_play(SND_SHARD_PULSE, 1.0f);
+    }
     // Hard cut
     const ShotRel& r = g_rel[c.first + g_shot];
     g.cam.pos = resolve(s.from, r.from);

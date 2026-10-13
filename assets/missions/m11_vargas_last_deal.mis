@@ -1,0 +1,60 @@
+# MISSION 11 - VARGA'S LAST DEAL
+# The rival gang leader's link to the alien technology plot. Two choices with consequences.
+mission 11
+key m11
+title "Varga's Last Deal"
+desc "With the city burning, Black Lantern is cleaning up everyone who ever touched a Shard. Nikolai Varga is next on their list - and he knows who bought his Halberd shipments."
+start mansion 0 0
+requires 10
+reward 2000
+
+music combat
+spawn varga story varga @mansion 2 -30 180 varga magnum cower
+name varga "Nikolai Varga"
+invulnerable varga 1
+spawn vdead gunman varga_thug @mansion -6 -12 0 varga smg stand
+spawn vdead gunman varga_thug @mansion 7 -20 0 varga smg stand
+slay vdead
+group ops operative operative 5 @mansion 0 -16 6 operatives rifle hostile
+name ops "Black Lantern Operative"
+goto @mansion 0 -3 5 "Get through the estate gate"
+kill ops "Kill the Black Lantern team"
+group ops2 operative operative 4 @mansion -9 -27 3 operatives rifle hostile
+name ops2 "Black Lantern Operative"
+say operative "Second team moving in! Get Varga!"
+kill ops2 "Kill the second team"
+checkpoint
+music tension
+goto_actor varga 2.5 "Reach Varga"
+dialogue m11_varga
+choice "Varga is bleeding out on his own lawn." "Let him live" spare "Finish him" execute
+label spare
+dialogue m11_spare
+flag varga_spared 1
+rep varga 30
+jump marcus
+label execute
+invulnerable varga 0
+hostile varga
+kill varga "Finish Varga"
+dialogue m11_execute
+flag varga_spared 0
+rep varga -50
+label marcus
+checkpoint
+spawn marcus story marcus @diner 2 8 200 civilian fists stand
+name marcus "Marcus Reyes"
+invulnerable marcus 1
+goto @diner 0 -1 4 "Find Marcus at the Lucky Star Diner"
+talk marcus "Confront [E]" "Confront Marcus"
+dialogue m11_marcus
+choice "Marcus sold Eli out to save his own family." "Forgive him" forgive "Walk away from him for good" leave
+label forgive
+dialogue m11_forgive
+flag marcus_forgiven 1
+jump done
+label leave
+dialogue m11_leave
+flag marcus_forgiven 0
+label done
+end

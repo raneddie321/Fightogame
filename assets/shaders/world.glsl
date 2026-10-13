@@ -21,7 +21,7 @@ out vec3 vWorld;
 out vec3 vNormal;
 out vec2 vUV;
 out vec4 vColor;
-out vec4 vMat;
+flat out vec4 vMat;   // per-face material data: never interpolated (seeds feed hashes)
 out vec4 vShadow;
 out vec3 vLocal;
 
@@ -57,7 +57,7 @@ in vec3 vWorld;
 in vec3 vNormal;
 in vec2 vUV;
 in vec4 vColor;
-in vec4 vMat;
+flat in vec4 vMat;
 in vec4 vShadow;
 in vec3 vLocal;
 
@@ -333,7 +333,7 @@ void main() {
     if ((flags & 1) != 0) {
         float frame;
         float tower = (layer == 4) ? 1.0 : 0.0;
-        vec3 w = facade_windows(vUV, vMat.w, tower, glassMask, frame);
+        vec3 w = facade_windows(vUV, floor(vMat.w + 0.5), tower, glassMask, frame);
         emit += w * uWindowsOn * 1.6;
         s.albedo = mix(s.albedo, vec3(0.02, 0.025, 0.03), glassMask);
         s.rough = mix(s.rough, 0.08, glassMask);
@@ -367,7 +367,9 @@ void main() {
         emit += vcol * emissive * pulse;
     }
     col += emit * uEmissiveScale;
-    col += vec3(1.0, 0.25, 0.2) * uHitFlash * 0.6;
+    // Hit flash: a red rim on the struck character instead of a flat full-body tint
+    float rimHit = pow(1.0 - NoV, 2.0);
+    col += vec3(1.0, 0.12, 0.08) * uHitFlash * (0.05 + 0.45 * rimHit);
 
     col = apply_fog(col, vWorld);
     oColor = vec4(col * uOutScale, 1.0);

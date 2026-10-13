@@ -1,0 +1,70 @@
+# MISSION 13 - THE NEST
+# Into the storm drain nest: alien military operations and Eli's voice.
+mission 13
+key m13
+title "The Nest"
+desc "The nest under Ironworks is broadcasting to the ship. Okafor's uplink can listen in - if someone carries it to the pylon at the heart of the nest."
+start drain_hatch -4 0
+requires 12
+reward 3000
+
+spawn kincaid aegis kincaid @drain_hatch -2 -2 0 aegis arc follow
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+group squad aegis aegis 2 @drain_hatch 3 -3 1 aegis arc follow
+name squad "A.E.G.I.S. Soldier"
+invulnerable squad 1
+talk kincaid "Talk [E]" "Talk to Kincaid"
+dialogue m13_brief
+interact @drain_hatch 0 0 2.5 "Climb down [E]" "Enter the storm drain"
+fade_out
+despawn kincaid
+despawn squad
+teleport @nest 0 -134 0
+spawn kincaid aegis kincaid @nest 2 -133 0 aegis arc follow
+name kincaid "Cmdr. Ava Kincaid"
+invulnerable kincaid 1
+group squad aegis aegis 2 @nest -2 -132 1 aegis arc follow
+name squad "A.E.G.I.S. Soldier"
+invulnerable squad 1
+music alien
+fade_in
+group t1 stalker stalker 4 @nest 0 -95 2.5 alien claws hostile
+name t1 "Stalker"
+sound screech
+kill t1 "Fight down the tunnel"
+goto @nest 0 -62 4 "Keep moving"
+group t2 tendril tendril 2 @nest 0 -46 2 alien claws hostile
+group t2 stalker stalker 3 @nest 0 -40 2.5 alien claws hostile
+name t2 "Creature"
+sound screech
+kill t2 "Clear the tunnel"
+checkpoint
+goto @nest 0 -18 4 "Enter the nest"
+group n1 stalker stalker 6 @nest 0 6 10 alien claws hostile
+name n1 "Stalker"
+spawn nbrute brute brute @nest 6 28 200 alien claws hostile
+name nbrute "Brute"
+music combat
+kill n1 "Kill the nest guardians"
+kill nbrute "Kill the brute"
+checkpoint
+hold @nest 0 9 3 10 "Plant Okafor's uplink at the pylon (hold E)"
+shard_glow 6
+fx_flash
+cutscene m13_overseer
+dialogue m13_overseer
+group n2 stalker stalker 5 @nest 0 30 10 alien claws hostile
+group n2 tendril tendril 2 @nest -15 25 3 alien claws hostile
+name n2 "Creature"
+sound screech
+survive 25 "Hold the pylon while the uplink finishes"
+kill n2 "Kill the remaining creatures"
+dialogue m13_eli
+fade_out
+despawn kincaid
+despawn squad
+teleport @drain_hatch 0 -2 180
+music tension
+fade_in
+end

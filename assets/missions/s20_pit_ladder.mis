@@ -1,0 +1,31 @@
+# SIDE JOB - PIT LADDER (repeatable underground fights)
+mission 20
+key s20
+title "Pit Ladder"
+desc "Sal always has another fighter who thinks he can take you. Two rounds, winner takes the purse."
+start fight_pit 5 0
+requires 3
+reward 300
+side
+repeatable
+
+group crowd civilian - 10 @fight_pit 0 31 7 civilian fists spectate
+goto @fight_pit 0 20.5 1.8 "Step into the ring"
+spawn p1 fighter fighter @fight_pit 0 26 180 fighter fists hold
+name p1 "Challenger"
+nonlethal p1
+hostile p1
+sound cheer
+defeat p1 "Round 1: Win the fight"
+pit_win
+heal
+spawn p2 fighter fighter @fight_pit -2 26 180 fighter fists hold
+spawn p2 fighter fighter @fight_pit 2 26 180 fighter fists hold
+name p2 "Challenger"
+nonlethal p2
+hostile p2
+sound cheer
+defeat p2 "Round 2: Two challengers"
+pit_win
+sound cheer
+end

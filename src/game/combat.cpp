@@ -2,8 +2,8 @@
 #include "game.h"
 #include "../audio/audio.h"
 
-static const vec3 kBlood(0.42f, 0.015f, 0.015f);
-static const vec3 kBloodDark(0.26f, 0.01f, 0.01f);
+static const vec3 kBlood(0.5f, 0.02f, 0.018f);
+static const vec3 kBloodDark(0.3f, 0.012f, 0.01f);
 static const vec3 kIchor(0.3f, 0.95f, 0.55f);
 
 // ---------------------------------------------------------------------------
@@ -15,6 +15,9 @@ static float gore_scale() {
 }
 
 void combat_blood_burst(vec3 pos, vec3 dir, float amount, bool alien) {
+    // Heavy hits are already capped upstream; this guards every caller (huge amounts would
+    // flood the particle pool with screen-sized mist)
+    amount = clampf(amount, 0.0f, 4.0f);
     float gs = gore_scale();
     if (gs <= 0.0f) return;
     vec3 col = alien ? kIchor : kBlood;
@@ -57,7 +60,7 @@ void combat_blood_burst(vec3 pos, vec3 dir, float amount, bool alien) {
 void combat_blood_pool(vec3 pos, bool alien, float size) {
     if (gore_scale() <= 0.0f) return;
     float gy = world_ground_height(pos + vec3(0, 0.5f, 0), 0.1f, 0.6f);
-    Decal* d = fx_decal(alien ? DT_ICHOR : DT_BLOOD_POOL, vec3(pos.x, gy + 0.015f, pos.z), vec3(0, 1, 0), size * (fx_gore_level() == 2 ? 1.25f : 1.0f), alien ? kIchor : vec3(0.32f, 0.01f, 0.01f), g.rng.f01());
+    Decal* d = fx_decal(alien ? DT_ICHOR : DT_BLOOD_POOL, vec3(pos.x, gy + 0.015f, pos.z), vec3(0, 1, 0), size * (fx_gore_level() == 2 ? 1.25f : 1.0f), alien ? kIchor : vec3(0.4f, 0.014f, 0.012f), g.rng.f01());
     if (d) {
         d->grow = 0.12f;
         d->growTarget = 0.95f;
@@ -506,6 +509,7 @@ void combat_damage(int victim, int attacker, float dmg, vec3 hitPos, vec3 dir, i
     v.hitFlash = 1.0f;
     float amount = kind == DMG_HEADSHOT ? 2.5f : kind == DMG_MELEE ? dmg / 22.0f : kind == DMG_FALL ? 0.3f : dmg / 16.0f;
     if (kind == DMG_ENERGY && !alien) amount *= 0.5f;
+    amount = fminf(amount, 4.0f);
     if (kind != DMG_FALL && kind != DMG_FIRE) {
         combat_blood_burst(hitPos, d, amount, alien);
         if (kind == DMG_BULLET || kind == DMG_HEADSHOT || kind == DMG_CLAW) {

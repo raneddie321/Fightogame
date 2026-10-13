@@ -1,0 +1,46 @@
+# FIGHTO evidence journal entries. "@<id> <title>" followed by body text lines.
+@0 Eli's Scorched Notebook
+"Night shift, Halberd Shipping, Pier 9. Crate 4471 is warm. Crates aren't supposed to be warm."
+"Told M. about it. He said forget it. Can't forget it. It hums when I'm near it, and I hear it in my sleep."
+The last page is a sketch of a jagged crystal, drawn over and over until the pencil tore the paper.
+@1 Kings Collection Ledger
+A soaked ledger from the alley behind the laundromat. Weekly payments from every shop on Harlan Street.
+One line is underlined twice: "Halberd - night vans - DON'T TOUCH. Varga's."
+@2 Fight Pit Betting Slip
+A betting slip with a delivery schedule written on the back: "Pier 9 - every 2nd Tuesday - black vans - Nexus."
+Somebody at the Pit was watching the docks for money.
+@3 Halberd Manifest #4471
+Declared contents: "Industrial ceramics, 1 unit, 40 kg." Origin: "Svalbard Research Logistics (Arctic)."
+Consignee: NEXUS LOGISTICS, BLACKRIDGE. Handling note: "Do not open. Do not X-ray. Keep below 4 degrees."
+@4 Varga's Private Ledger
+Eighteen months of payments from Nexus Logistics, always in cash, always for "salvage."
+The last entry, three weeks ago: "N.L. asks about the kid at Pier 9. Told them nothing. They found him anyway."
+@5 Altered Fire Report
+A carbon copy of the fire marshal's report on the Cross residence. The original cause - "accelerant, multiple ignition points" - has been crossed out.
+Typed over it: "electrical fault." Initialled by someone with a federal clearance number.
+@6 Burner Phone
+A cracked phone dropped in an alley. One saved contact: "BL-ACTUAL." The last message:
+"Residence sanitized. Subject E. en route to Lantern. Leave the dog."
+@7 Missing Persons Flyers
+A stack of flyers from the last two years: a night watchman, two dock workers, a teenage runaway.
+Every one of them worked within three blocks of Halberd Shipping.
+@8 2019 Newspaper Clipping
+BLACKRIDGE HERALD, 2019: "Mysterious Light Over Ironworks Puzzles Residents." A city spokesperson blames "atmospheric testing."
+In the margin, in Eli's handwriting: "41 days later."
+@9 A.E.G.I.S. Surveillance Photos
+Grainy photographs of Damian's prison release, the bus stop on Harlan Street, and the Lucky Star Diner.
+Stamped on the back: "PRIORITY - BOND CANDIDATE - SIBLING OF E.C."
+@10 Nexus Logistics Keycard
+A black keycard with a gold sigil and no name. On the back: "Elevator B. Sublevel 9. Return to Director's office."
+@11 Maintenance Crew Log
+"Hour 2: water's warm down here. Walls are... growing? Hour 3: Ruiz says something moved in the dark. Hour 4: we're not alone."
+The rest of the log is just the same tone, recorded for six hours.
+@12 Project LANTERN Printout
+"2019: Artifact cluster recovered from the Arctic site used to amplify a directed transmission into deep space. Reply received after 41 days."
+"Subject E. Cross. Exposure event at Halberd Shipping. Bond confirmed. Transferred to LANTERN chamber. Residence sanitized by Black Lantern team." Authorization: E. THORNE.
+@13 Transmitter Log: West Hills
+Five years of grid measurements from Silverline Motors' substation feed, timestamped every 41 minutes. The receiving address is not on Earth.
+@14 Transmitter Log: St. Agnes
+Population counts by block, updated nightly. A column labelled "candidates" lists people who were near Halberd Shipping on the night of the 2019 light.
+@15 Transmitter Log: The Pit
+Readings from under the Ironworks. Ground temperature rising half a degree every month - right where the nest would later be found.

@@ -1,0 +1,25 @@
+# FIGHTO mission index - one .mis file per line, loaded in this order.
+# Story: Act I (crime)
+m01_back_on_the_blocks.mis
+m02_debts_to_collect.mis
+m03_the_fight_pit.mis
+m04_a_simple_job.mis
+m05_the_warehouse.mis
+# Story: Act II (A.E.G.I.S.)
+m06_the_strangers.mis
+m07_controlled_exposure.mis
+m08_the_signal.mis
+m09_blackout.mis
+m10_first_contact.mis
+# Story: Act III (invasion)
+m11_vargas_last_deal.mis
+m12_betrayal.mis
+m13_the_nest.mis
+m14_lantern.mis
+# Side jobs
+s20_pit_ladder.mis
+s21_iron_circuit.mis
+s22_repo_man.mis
+s23_kings_corner.mis
+s24_static.mis
+s25_evac_run.mis

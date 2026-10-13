@@ -42,7 +42,7 @@ layout(location = 2) in vec4 aColor;
 layout(location = 3) in vec4 aParams;   // type, emissive, seed, extra
 out vec2 vUV;
 out vec4 vColor;
-out vec4 vParams;
+flat out vec4 vParams;
 out vec3 vWorld;
 out vec3 vLight;
 #ifdef RAIN
@@ -83,7 +83,7 @@ void main() {
 #ifdef FRAGMENT
 in vec2 vUV;
 in vec4 vColor;
-in vec4 vParams;
+flat in vec4 vParams;
 in vec3 vWorld;
 in vec3 vLight;
 layout(location = 0) out vec4 oColor;
@@ -206,9 +206,18 @@ void main() {
     }
     alpha *= vColor.a;
     vec3 lit = col * (vLight * 0.6 + uAmbientUp * 0.5);
-    // Wet look: specular sparkle from local lights
+    // Wet look: liquid surfaces get a Fresnel reflection of the sky and a sheen from nearby lights.
+    // The decal normal comes from screen-space derivatives (decals are flat quads).
     vec3 V = normalize(uCamPos - vWorld);
-    lit += gloss * vLight * 0.08 * pow(1.0 - max(V.y, 0.0), 3.0);
+    vec3 Nd = normalize(cross(dFdx(vWorld), dFdy(vWorld)));
+    if (dot(Nd, V) < 0.0) Nd = -Nd;
+    float NoV = max(dot(Nd, V), 0.0);
+    float fres = 0.03 + 0.97 * pow(1.0 - NoV, 5.0);
+    vec3 env = sky_color(reflect(-V, Nd));
+    float thick = (type == 1) ? smoothstep(0.0, 0.5, alpha) : alpha;
+    lit += gloss * thick * (env * fres * 0.9 + vLight * (0.05 + 0.6 * fres) * vec3(1.0, 0.85, 0.85));
+    // Fresh blood: a thin bright crimson film where light passes through the edge
+    if (type == 0 || type == 1 || type == 5) lit += col * vLight * 0.35 * smoothstep(0.2, 1.0, alpha) * (1.0 - NoV * 0.5);
     if (type == 4) lit += col * 1.2;
     float f = fog_amount(vWorld);
     lit = mix(lit, uFogColor, f);

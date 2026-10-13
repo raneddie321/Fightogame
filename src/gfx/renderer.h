@@ -146,6 +146,8 @@ struct DrawItem {
     float hitFlash;
     bool castShadow;
     float sortDist;
+    vec3 cullCenter;    // skinned items: world-space bounds centre (bones may be in world space)
+    float cullRadius;   // > 0 enables cullCenter
 };
 
 enum ParticleType { PT_SMOKE = 0, PT_BLOOD = 1, PT_SPARK = 2, PT_FIRE = 3, PT_MUZZLE = 4, PT_STREAK = 5, PT_RING = 6, PT_ICHOR = 7 };
