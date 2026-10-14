@@ -253,7 +253,8 @@ void main() {
         float fres = 0.025 + 0.975 * pow(1.0 - NoV, 5.0);
         vec3 env = sky_color(reflect(-V, Nd));
         float thick = (type == 1) ? smoothstep(0.0, 0.5, alpha) : alpha;
-        lit = col * (diff * 0.7 + uAmbientUp * 0.35 + uSunColor * 0.12);
+        // The base lift keeps fresh blood reading as deep red even away from street lights
+        lit = col * (diff * 0.9 + uAmbientUp * 2.0 + uSunColor * 0.3 + vec3(0.32));
         lit += thick * (spec * 0.9 + env * fres * 0.35);
         // Light scattering through the thin edge of fresh blood
         if (type == 0 || type == 1 || type == 5) lit += col * diff * 0.6 * (1.0 - smoothstep(0.35, 0.9, alpha));
