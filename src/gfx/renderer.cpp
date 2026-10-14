@@ -37,6 +37,7 @@ struct R {
     int texSize;
     // Shaders
     Shader world, worldSkinned, shadow, shadowSkinned, sky, particle, decal, beam, rain;
+    Shader worldModel, shadowModel;   // imported models: albedo texture instead of the material layers
     Shader down, up, composite;
     // Textures
     u32 albedoArr, normalArr;
@@ -400,6 +401,8 @@ static bool load_shaders() {
     ok &= shader_load(&r->worldSkinned, "world.glsl", "#define SKINNED 1\n");
     ok &= shader_load(&r->shadow, "world.glsl", "#define SHADOW_PASS 1\n");
     ok &= shader_load(&r->shadowSkinned, "world.glsl", "#define SHADOW_PASS 1\n#define SKINNED 1\n");
+    ok &= shader_load(&r->worldModel, "world.glsl", "#define MODEL_TEX 1\n");
+    ok &= shader_load(&r->shadowModel, "world.glsl", "#define SHADOW_PASS 1\n#define MODEL_TEX 1\n");
     ok &= shader_load(&r->sky, "sky.glsl", "");
     ok &= shader_load(&r->particle, "fx.glsl", "#define PARTICLE 1\n");
     ok &= shader_load(&r->decal, "fx.glsl", "#define DECAL 1\n");
@@ -684,7 +687,7 @@ static void draw_items(bool shadowPass) {
     shader_use(s);
     for (int i = 0; i < r->drawCount; i++) {
         const DrawItem& d = r->draws[i];
-        if (d.bones) continue;
+        if (d.bones || d.albedoTex) continue;
         if (shadowPass && !d.castShadow) continue;
         vec3 c = transform_point(d.model, (d.mesh->bmin + d.mesh->bmax) * 0.5f);
         float rad = length(d.mesh->bmax - d.mesh->bmin) * 0.5f;
@@ -697,6 +700,41 @@ static void draw_items(bool shadowPass) {
             set_vec3(s, "uBloodColor", d.bloodColor);
             set_float(s, "uHitFlash", d.hitFlash);
         }
+        draw_mesh(d.mesh);
+    }
+    // Imported models: their own albedo texture on unit 5 (units 0-4 hold the world textures)
+    bool modelSetup = false;
+    s = shadowPass ? &r->shadowModel : &r->worldModel;
+    for (int i = 0; i < r->drawCount; i++) {
+        const DrawItem& d = r->draws[i];
+        if (d.bones || !d.albedoTex) continue;
+        if (shadowPass && !d.castShadow) continue;
+        vec3 c = transform_point(d.model, (d.mesh->bmin + d.mesh->bmax) * 0.5f);
+        float rad = length(transform_dir(d.model, d.mesh->bmax - d.mesh->bmin)) * 0.5f;
+        if (shadowPass) { if (dist_xz(c, r->shadowCenter) > r->shadowRadius * 1.5f + rad) continue; }
+        else if (!frustum_sphere(r->frustum, c, rad)) continue;
+        if (!modelSetup) {
+            if (shadowPass) {
+                shader_use(s);
+                set_mat4(s, "uViewProj", r->shadowVP);
+                set_float(s, "uTime", r->time);
+                set_float(s, "uWind", r->atm.wind);
+            } else {
+                set_world_uniforms(s);
+            }
+            set_int(s, "uModelTex", 5);
+            modelSetup = true;
+        }
+        set_mat4(s, "uModel", d.model);
+        if (!shadowPass) {
+            set_vec4(s, "uTint", d.tint);
+            set_float(s, "uBlood", d.blood);
+            set_vec3(s, "uBloodColor", d.bloodColor);
+            set_float(s, "uHitFlash", d.hitFlash);
+        }
+        glActiveTexture(GL_TEXTURE0 + 5);
+        glBindTexture(GL_TEXTURE_2D, d.albedoTex);
+        glActiveTexture(GL_TEXTURE0);
         draw_mesh(d.mesh);
     }
     // Skinned characters

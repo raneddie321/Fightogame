@@ -1,5 +1,6 @@
 // FIGHTO main surface shader: city, characters, vehicles, props.
-// Variants: SKINNED (GPU skinning), SHADOW_PASS (depth only), LOW_QUALITY (mobile).
+// Variants: SKINNED (GPU skinning), SHADOW_PASS (depth only), LOW_QUALITY (mobile),
+// MODEL_TEX (imported models: albedo texture * vertex colour, geometric normal).
 
 #ifdef VERTEX
 layout(location = 0) in vec3 aPos;
@@ -63,13 +64,24 @@ in vec3 vLocal;
 
 #ifdef SHADOW_PASS
 out vec4 oColor;
+#ifdef MODEL_TEX
+uniform highp sampler2D uModelTex;
+void main() {
+    if (texture(uModelTex, vUV).a < 0.5) discard;
+    oColor = vec4(1.0);
+}
+#else
 void main() { oColor = vec4(1.0); }
+#endif
 #else
 uniform highp sampler2DArray uAlbedoArr;
 uniform highp sampler2DArray uNormalArr;
 uniform highp sampler2DShadow uShadowMap;
 uniform highp usampler2D uLightGrid;
 uniform highp sampler2D uLightData;
+#ifdef MODEL_TEX
+uniform highp sampler2D uModelTex;
+#endif
 uniform vec4 uLightGridParams;      // originX, originZ, 1/cellSize, cellsX
 uniform vec4 uLightGridParams2;     // cellsZ, shadow texel size, shadow strength, unused
 uniform float uLayerTile[24];
@@ -253,6 +265,18 @@ void main() {
     int flags = int(vMat.y + 0.5);
     float roughScale = vMat.z / 128.0;
     float emissive = vMat.w * 0.1;
+#ifdef MODEL_TEX
+    vec4 mtex = texture(uModelTex, vUV);
+    if (mtex.a < 0.5) discard;
+    vec4 nrm = vec4(0.5, 0.5, 1.0, 0.0);
+    vec3 vcol = srgb_to_linear(mtex.rgb) * srgb_to_linear(vColor.rgb);
+    vec3 albedo = vcol;
+    float rough = clamp(roughScale, 0.04, 1.0);
+    float ao = 1.0;
+    vec3 Ng = normalize(vNormal);
+    if (!gl_FrontFacing) Ng = -Ng;
+    vec3 N = Ng;
+#else
     float tile = uLayerTile[layer];
     vec2 tuv = vUV / tile;
     vec4 alb = texture(uAlbedoArr, vec3(tuv, float(layer)));
@@ -278,6 +302,7 @@ void main() {
     vec2 nxy = nrm.rg * 2.0 - 1.0;
     float nstr = 1.0;
     vec3 N = normalize(Tn * invmax * nxy.x * nstr + Bn * invmax * nxy.y * nstr + Ng * sqrt(max(1.0 - dot(nxy, nxy), 0.0)));
+#endif
 
     float metal = (flags & 4) != 0 ? 0.85 : 0.0;
     vec3 emit = vec3(0.0);
