@@ -212,6 +212,9 @@ int main(int argc, char** argv) {
 
     static InputState input;
     memset(&input, 0, sizeof(input));
+    // --touch: the left mouse button acts as a finger, for testing the mobile touch controls
+    bool touchEmu = false;
+    for (int i = 1; i < argc; i++) if (str_eq(argv[i], "--touch")) touchEmu = true;
     double last = plat_time_seconds();
     bool running = true;
     while (running && !g_quit) {
@@ -284,6 +287,20 @@ int main(int argc, char** argv) {
             input.mouseY = (float)(g_h / 2);
         }
         input.mouseCaptured = g_captured;
+        if (touchEmu) {
+            TouchPoint& t = input.touches[0];
+            if (t.ended) { t.active = false; t.ended = false; }
+            t.began = false;
+            if (input.pressed[KEY_MOUSE_LEFT]) {
+                memset(&t, 0, sizeof(t));
+                t.active = t.began = true;
+                t.startX = input.mouseX;
+                t.startY = input.mouseY;
+            }
+            if (t.active) { t.x = input.mouseX; t.y = input.mouseY; }
+            if (input.released[KEY_MOUSE_LEFT] && t.active) t.ended = true;
+            input.touchMode = true;
+        }
         double now = plat_time_seconds();
         float dt = (float)(now - last);
         last = now;

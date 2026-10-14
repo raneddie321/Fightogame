@@ -603,6 +603,14 @@ void gen_aegis_facility() {
     panel_light(F(30, H + 1.9f, 40), vec3(1.0f, 0.75f, 0.4f), 5.0f, 10.0f);
     // Wall screens
     for (int k = 0; k < 3; k++) gen_box(F(35.8f, 2.0f, 26 + k * 8.0f), F(35.9f, 4.5f, 31 + k * 8.0f), MAT_PAINT, vec3(0.3f, 0.6f, 1.0f), MF_EMISSIVE | MF_PULSE, 1.0f, 5.0f);
+    // Wall-washer strips and a cool fill so the room reads around the globe
+    for (int k = 0; k < 4; k++) {
+        float x = 8.0f + k * 7.5f;
+        gen_box(F(x - 2.5f, 0.15f, 47.7f), F(x + 2.5f, 0.3f, 47.8f), MAT_PAINT, vec3(0.95f, 0.7f, 0.3f), MF_EMISSIVE, 1.0f, 8.0f);
+        gen_box(F(x - 2.5f, 0.15f, 22.2f), F(x + 2.5f, 0.3f, 22.3f), MAT_PAINT, vec3(0.95f, 0.7f, 0.3f), MF_EMISSIVE, 1.0f, 8.0f);
+    }
+    gen_light(F(8, 4.5f, 26), 14.0f, vec3(0.5f, 0.7f, 1.0f), 6.0f);
+    gen_light(F(32, 4.5f, 44), 14.0f, vec3(0.5f, 0.7f, 1.0f), 6.0f);
     set_lm(LM_AEGIS_BRIEFING, "Briefing Room", F(10, 0, 34), 4.0f, false);
 
     // Laboratory (west): x -40..-4, z 14..50
@@ -672,6 +680,9 @@ void gen_aegis_facility() {
     gen_cyl(skylight, 3.0f, 0.2f, 20, MAT_PAINT, vec3(0.6f, 0.75f, 1.0f), MF_EMISSIVE, 1.0f, 10.0f);
     gen_light(skylight - vec3(0, 1.5f, 0), 16.0f, vec3(0.5f, 0.7f, 1.0f), 10.0f);
     gen_beam(skylight, skylight - vec3(0, 9.0f, 0), 2.6f, 4.0f, vec3(0.5f, 0.7f, 1.0f), 0.25f);
+    // Cold fill light bouncing off the rock walls
+    gen_light(F(-30, 4.5f, -60), 16.0f, vec3(0.45f, 0.6f, 1.0f), 7.0f);
+    gen_light(F(-12, 4.5f, -86), 16.0f, vec3(0.45f, 0.6f, 1.0f), 7.0f);
     set_lm(LM_AEGIS_ARCHIVE, "Archive Vault", F(-20, 0, -76), 3.0f, false);
 
     // Restricted reactor shaft (Project LANTERN): x 4..48, z -98..-45

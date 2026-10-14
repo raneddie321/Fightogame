@@ -422,23 +422,94 @@ static int st_showcase(int f) {
         {landmark_pos(LM_PLAZA) + vec3(40, 18, 60), landmark_pos(LM_PLAZA) + vec3(0, 60, -40), "12_downtown_skyline"},
         {aegis + vec3(10, 3.0f, 26), aegis + vec3(21, 3.5f, 35), "13_aegis_holo_globe"},
         {aegis + vec3(-20, 2.5f, -62), aegis + vec3(-22, 1.5f, -80), "14_aegis_archive"},
-        {aegis + vec3(26, 3.0f, -52), aegis + vec3(26, 5.0f, -72), "15_project_lantern_reactor"},
+        {aegis + vec3(13, 2.6f, -50), aegis + vec3(26, 4.5f, -72), "15_project_lantern_reactor"},
         {nest + vec3(-10, 3.0f, 36), nest + vec3(0, 7.0f, 66), "16_alien_nest"},
         {landmark_pos(LM_FIGHT_PIT) + vec3(-8, 3.5f, 14), landmark_pos(LM_FIGHT_PIT) + vec3(0, 1, 22), "17_fight_pit"},
-        {landmark_pos(LM_WAREHOUSE) + vec3(-20, 3.0f, 12), landmark_pos(LM_WAREHOUSE) + vec3(18, 1.5f, 28), "18_halberd_warehouse"},
+        {landmark_pos(LM_WAREHOUSE) + vec3(-2, 2.6f, 7), landmark_pos(LM_WAREHOUSE) + vec3(16, 1.6f, 39), "18_halberd_warehouse"},
         {landmark_pos(LM_HOME) + vec3(6, 2.5f, -10), landmark_pos(LM_HOME) + vec3(0, 2, 6), "19_burned_home"},
     };
     int n = ARRAY_COUNT(cams);
     int idx = f / 12;
     if (idx >= n) { camera_release(); return PASS; }
     Cam& c = cams[idx];
-    player_teleport(c.pos + vec3(0, -1.5f, 0), 0);
+    // Park the player behind the camera: out of frame, and camera collision never pulls the view
+    vec3 back = c.pos - c.target;
+    back.y = 0;
+    back = length(back) > 0.01f ? normalize(back) : vec3(0, 0, -1);
+    player_teleport(c.pos + back * 3.0f, 0);
     g.cam.cinematic = true;
     g.cam.cinePos = g.cam.pos = c.pos;
     g.cam.cineTarget = g.cam.target = c.target;
     g.cam.cineFov = g.cam.fov = 60;
     if (f % 12 == 10) shot(c.name);
     return RUNNING;
+}
+
+// Touch controls: synthetic touches through the same controls_update path Android uses
+static void touch_set(int slot, float x, float y, bool began, bool ended) {
+    TouchPoint& t = g.input->touches[slot];
+    if (began) { memset(&t, 0, sizeof(t)); t.id = 100 + slot; t.startX = x; t.startY = y; }
+    t.active = true;
+    t.began = began;
+    t.ended = ended;
+    t.x = x;
+    t.y = y;
+}
+static void touch_release_all() {
+    for (int i = 0; i < MAX_TOUCHES; i++) g.input->touches[i].active = g.input->touches[i].began = g.input->touches[i].ended = false;
+}
+static bool touch_attack_seen;
+static int st_touch(int f) {
+    InputState* in = g.input;
+    float W = (float)g.width, H = (float)g.height;
+    if (f == 0) {
+        clear_test_actors();
+        if (P().state == AS_VEHICLE) player_exit_vehicle();
+        player_select_weapon(W_FISTS);
+        goto_test_arena();
+        g_startPos = P().pos;
+        touch_attack_seen = false;
+        in->touchMode = true;
+        touch_set(0, 150.0f * H / 720.0f, H - 150.0f * H / 720.0f, true, false);
+        return RUNNING;
+    }
+    // Drag the virtual joystick upwards (forward) for 40 frames
+    if (f < 40) {
+        touch_set(0, 150.0f * H / 720.0f, H - 150.0f * H / 720.0f - 60.0f * H / 720.0f, false, false);
+        if (f == 30) shot("36_touch_hud_on_foot");
+        return RUNNING;
+    }
+    if (f == 40) { touch_set(0, 0, 0, false, true); return RUNNING; }
+    if (f == 41) {
+        float moved = dist_xz(P().pos, g_startPos);
+        fmt_str(g_msg, sizeof(g_msg), "joystick moved player %.1f m", moved);
+        if (moved < 2.0f) { touch_release_all(); in->touchMode = false; return FAIL; }
+        // Tap the attack button
+        TouchLayout lay;
+        touch_layout(&lay, (int)W, (int)H, false, false, false);
+        for (int b = 0; b < lay.count; b++)
+            if (lay.buttons[b].action == ACT_ATTACK) touch_set(1, lay.buttons[b].c.x, lay.buttons[b].c.y, true, false);
+        return RUNNING;
+    }
+    if (f == 42) { touch_attack_seen = g.ctl.down[ACT_ATTACK]; touch_set(1, 0, 0, false, true); return RUNNING; }
+    if (f == 43) {
+        touch_release_all();
+        // Vehicle layout screenshot
+        vec3 lane(road_x(4) - 3.6f, 0.0f, block_center(4, 3).z - 30.0f);
+        int v = vehicle_spawn(VT_SPORTS, lane, 0, vec3(0.1f, 0.3f, 0.8f), VAI_PARKED);
+        if (v >= 0) { str_copy(g.vehicles[v].tag, 16, "autotest"); player_enter_vehicle(v); }
+        return RUNNING;
+    }
+    if (f == 70) shot("37_touch_hud_vehicle");
+    if (f < 72) return RUNNING;
+    if (P().state == AS_VEHICLE) player_exit_vehicle();
+    for (int i = 0; i < MAX_VEHICLES; i++) if (g.vehicles[i].active && str_eq(g.vehicles[i].tag, "autotest")) vehicle_despawn(i);
+    touch_release_all();
+    in->touchMode = false;
+    char moved[96];
+    str_copy(moved, sizeof(moved), g_msg);
+    fmt_str(g_msg, sizeof(g_msg), "%s; attack button %s", moved, touch_attack_seen ? "registered" : "NOT registered");
+    return touch_attack_seen ? PASS : FAIL;
 }
 
 // Character lineup: story cast and enemy types side by side, for visual review
@@ -626,6 +697,7 @@ static const Step g_steps[] = {
     {"Wanted level & police dispatch", st_police, 900},
     {"Story & side missions (scripted run)", st_missions, 120000},
     {"Location showcase screenshots", st_showcase, 200},
+    {"Touch controls (mobile)", st_touch, 90},
     {"Character lineup", st_lineup, 80},
     {"Invasion sky", st_invasion_shot, 40},
     {"Save / load / corruption handling", st_save_load, 10},
