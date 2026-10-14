@@ -71,7 +71,13 @@ static void lm_burned_home(Rng& rng) {
     float cx = L.c.x;
     vec3 mn(cx - 7, CURB_H, L.z0 + 1), mx(cx + 7, CURB_H + 6.5f, L.z0 + 13);
     vec3 charred(0.16f, 0.14f, 0.13f);
-    gen_room(mn, mx, 0.35f, MAT_BRICK, charred, MAT_FLOOR_CONCRETE, vec3(0.2f, 0.18f, 0.17f), 1, 1.6f, 2.4f, false, MAT_BRICK, vec3(0.28f, 0.22f, 0.2f), MF_WINDOWS);
+    // No lit windows: the house is a gutted shell
+    gen_room(mn, mx, 0.35f, MAT_BRICK, charred, MAT_FLOOR_CONCRETE, vec3(0.2f, 0.18f, 0.17f), 1, 1.6f, 2.4f, false, MAT_BRICK, vec3(0.22f, 0.17f, 0.15f), 0);
+    // Soot streaks above the blown-out window holes
+    for (int k = 0; k < 4; k++) {
+        float x = mn.x + 2.0f + k * 3.3f;
+        gen_box(vec3(x - 0.7f, mn.y + 1.4f, mn.z - 0.38f), vec3(x + 0.7f, mx.y - 0.2f, mn.z - 0.36f), MAT_DIRT, vec3(0.03f, 0.028f, 0.026f), 0, 1.0f, 0, false);
+    }
     // Partial second floor and collapsed roof beams
     gen_solid(vec3(mn.x, mn.y + 3.2f, mn.z + 7), vec3(mx.x, mn.y + 3.45f, mx.z), MAT_WOOD, vec3(0.15f, 0.12f, 0.1f), SURF_WOOD);
     gen_tube(vec3(mn.x + 1, mn.y + 6.0f, mn.z + 2), vec3(mx.x - 2, mn.y + 0.3f, mn.z + 9), 0.18f, 5, MAT_WOOD, vec3(0.08f, 0.07f, 0.06f));
@@ -772,7 +778,7 @@ void gen_drain_tunnel() {
     for (int k = 0; k < 18; k++) {
         vec3 p = D(r3.range(-26, 26), 0, r3.range(36, 88));
         if (length(p - pc) < 9.0f) continue;
-        gen_ellipsoid(p + vec3(0, 0.9f, 0), vec3(0.7f, 1.0f, 0.7f), MAT_ALIEN, vec3(0.7f, 0.9f, 0.7f), MF_EMISSIVE | MF_PULSE, 0.3f, 1.5f);
+        gen_ellipsoid(p + vec3(0, 0.9f, 0), vec3(0.7f, 1.0f, 0.7f), MAT_ALIEN, vec3(0.42f, 0.55f, 0.22f), MF_EMISSIVE | MF_PULSE, 0.3f, 0.45f);
         world_add_box(p - vec3(0.5f, 0, 0.5f), p + vec3(0.5f, 1.8f, 0.5f), SURF_ALIEN, 1);
         if (k % 3 == 0) gen_light(p + vec3(0, 1.0f, 0), 7.0f, vec3(0.3f, 1.0f, 0.5f), 4.0f);
     }

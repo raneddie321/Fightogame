@@ -35,6 +35,40 @@ vec3 omni_light(vec3 P) {
     return sum;
 }
 
+// Diffuse + Blinn-Phong glints from the local lights (used per pixel by wet decals)
+vec3 omni_light_spec(vec3 P, vec3 N, vec3 V, float shininess, out vec3 diffuse) {
+    vec3 spec = vec3(0.0);
+    diffuse = vec3(0.0);
+    int cx = int(floor((P.x - uLightGridParams.x) * uLightGridParams.z));
+    int cz = int(floor((P.z - uLightGridParams.y) * uLightGridParams.z));
+    int cellsX = int(uLightGridParams.w);
+    int cellsZ = int(uLightGridParams2.x);
+    if (cx < 0 || cz < 0 || cx >= cellsX || cz >= cellsZ) return spec;
+    for (int t = 0; t < 3; t++) {
+        uvec4 ids = texelFetch(uLightGrid, ivec2(cx * 3 + t, cz), 0);
+        for (int c = 0; c < 4; c++) {
+            uint id = ids[c];
+            if (id == 65535u) return spec;
+            vec4 pr = texelFetch(uLightData, ivec2(int(id), 0), 0);
+            vec3 Lv = pr.xyz - P;
+            float d2 = dot(Lv, Lv);
+            float r = pr.w;
+            if (d2 > r * r) continue;
+            vec4 col = texelFetch(uLightData, ivec2(int(id), 1), 0);
+            vec4 sp = texelFetch(uLightData, ivec2(int(id), 2), 0);
+            float fall = clamp(1.0 - pow(sqrt(d2) / r, 4.0), 0.0, 1.0);
+            float att = fall * fall / (d2 + 1.0);
+            vec3 L = Lv * inversesqrt(max(d2, 1e-6));
+            if (sp.w > 0.0) att *= smoothstep(sp.w, mix(sp.w, 1.0, 0.4), dot(-L, sp.xyz));
+            float NoL = max(dot(N, L), 0.0);
+            diffuse += col.rgb * att * NoL;
+            vec3 H = normalize(L + V);
+            spec += col.rgb * att * pow(max(dot(N, H), 0.0), shininess) * NoL * (shininess + 8.0) * 0.04;
+        }
+    }
+    return spec;
+}
+
 #ifdef VERTEX
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec2 aUV;
@@ -205,19 +239,27 @@ void main() {
         col = vec3(0.01);
     }
     alpha *= vColor.a;
-    vec3 lit = col * (vLight * 0.6 + uAmbientUp * 0.5);
-    // Wet look: liquid surfaces get a Fresnel reflection of the sky and a sheen from nearby lights.
-    // The decal normal comes from screen-space derivatives (decals are flat quads).
+    // The decal normal comes from screen-space derivatives (decals are flat quads)
     vec3 V = normalize(uCamPos - vWorld);
     vec3 Nd = normalize(cross(dFdx(vWorld), dFdy(vWorld)));
     if (dot(Nd, V) < 0.0) Nd = -Nd;
-    float NoV = max(dot(Nd, V), 0.0);
-    float fres = 0.03 + 0.97 * pow(1.0 - NoV, 5.0);
-    vec3 env = sky_color(reflect(-V, Nd));
-    float thick = (type == 1) ? smoothstep(0.0, 0.5, alpha) : alpha;
-    lit += gloss * thick * (env * fres * 0.9 + vLight * (0.05 + 0.6 * fres) * vec3(1.0, 0.85, 0.85));
-    // Fresh blood: a thin bright crimson film where light passes through the edge
-    if (type == 0 || type == 1 || type == 5) lit += col * vLight * 0.35 * smoothstep(0.2, 1.0, alpha) * (1.0 - NoV * 0.5);
+    vec3 lit;
+    if (gloss > 0.5) {
+        // Wet liquid (blood, ichor): dark diffuse body, sharp glints from every nearby light
+        // and a weak Fresnel reflection of the sky - deep red, never washed out
+        vec3 diff;
+        vec3 spec = omni_light_spec(vWorld, Nd, V, 90.0, diff);
+        float NoV = max(dot(Nd, V), 0.0);
+        float fres = 0.025 + 0.975 * pow(1.0 - NoV, 5.0);
+        vec3 env = sky_color(reflect(-V, Nd));
+        float thick = (type == 1) ? smoothstep(0.0, 0.5, alpha) : alpha;
+        lit = col * (diff * 0.7 + uAmbientUp * 0.35 + uSunColor * 0.12);
+        lit += thick * (spec * 0.9 + env * fres * 0.35);
+        // Light scattering through the thin edge of fresh blood
+        if (type == 0 || type == 1 || type == 5) lit += col * diff * 0.6 * (1.0 - smoothstep(0.35, 0.9, alpha));
+    } else {
+        lit = col * (vLight * 0.6 + uAmbientUp * 0.5);
+    }
     if (type == 4) lit += col * 1.2;
     float f = fog_amount(vWorld);
     lit = mix(lit, uFogColor, f);

@@ -422,12 +422,22 @@ static void update_atmosphere(float dt) {
     a.cloudCover = 0.45f + g.rain * 0.5f;
     a.wind = 0.3f + g.rain * 0.5f;
     a.alienPulse = g.invasion;
-    if (underground) {
-        a.ambientUp = vec3(0.05f, 0.055f, 0.065f) + vec3(indoorAmb, indoorAmb, indoorAmb) * 0.1f;
-        a.ambientDown = vec3(0.025f, 0.025f, 0.03f);
+    if (underground && g.cam.pos.y < AEGIS_ORIGIN_Y + 30.0f) {
+        // A.E.G.I.S. facility: clean, clinical light bouncing off white panels
+        a.ambientUp = vec3(0.14f, 0.15f, 0.17f) + vec3(indoorAmb, indoorAmb, indoorAmb) * 0.1f;
+        a.ambientDown = vec3(0.07f, 0.075f, 0.085f);
+        a.fogBase = g.cam.pos.y - 5.0f;
+        a.fogDensity = 0.004f;
+        a.fogColor = vec3(0.05f, 0.055f, 0.065f);
+        a.sunColor = vec3(0, 0, 0);
+        a.flash = 0;
+    } else if (underground) {
+        // Storm drain and nest: damp darkness with a sick green tint
+        a.ambientUp = vec3(0.05f, 0.06f, 0.055f) + vec3(indoorAmb, indoorAmb, indoorAmb) * 0.1f;
+        a.ambientDown = vec3(0.025f, 0.03f, 0.025f);
         a.fogBase = g.cam.pos.y - 5.0f;
         a.fogDensity = 0.012f;
-        a.fogColor = vec3(0.02f, 0.025f, 0.03f);
+        a.fogColor = vec3(0.02f, 0.03f, 0.025f);
         a.sunColor = vec3(0, 0, 0);
         a.flash = 0;
     } else if (indoors) {

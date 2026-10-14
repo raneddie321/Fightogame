@@ -128,6 +128,7 @@ struct Surf {
     vec3 T;
     vec3 B;
     float wrap;
+    float sss;     // skin: light bleeding through near the shadow terminator
 };
 
 vec3 shade_light(Surf s, vec3 L, vec3 radiance) {
@@ -150,6 +151,8 @@ vec3 shade_light(Surf s, vec3 L, vec3 radiance) {
     vec3 F = F_Schlick(s.f0, VoH);
     vec3 spec = D * Vis * F * max(NoLraw, 0.0);
     vec3 diff = (vec3(1.0) - F) * (1.0 - s.metal) * s.albedo / PI * NoL;
+    // Cheap subsurface scattering: warm red light bleeding around the terminator
+    diff += s.sss * s.albedo * vec3(0.55, 0.16, 0.08) * (0.35 - 0.35 * abs(NoLraw)) / PI;
     return (diff + spec) * radiance;
 }
 
@@ -317,6 +320,7 @@ void main() {
     s.rough = rough;
     s.aniso = 0.0;
     s.wrap = (flags & 32) != 0 ? 0.25 : 0.0;
+    s.sss = ((flags & 32) != 0 && layer == 14) ? 1.0 : 0.0;   // MAT_SKIN on characters
 #ifndef LOW_QUALITY
     if (isGround > 0.5 && wet > 0.45) {
         s.aniso = 1.0;

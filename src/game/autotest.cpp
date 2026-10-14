@@ -432,7 +432,7 @@ static int st_showcase(int f) {
     int idx = f / 12;
     if (idx >= n) { camera_release(); return PASS; }
     Cam& c = cams[idx];
-    player_teleport(c.target + vec3(0.5f, 0, 0.5f), 0);
+    player_teleport(c.pos + vec3(0, -1.5f, 0), 0);
     g.cam.cinematic = true;
     g.cam.cinePos = g.cam.pos = c.pos;
     g.cam.cineTarget = g.cam.target = c.target;
@@ -441,13 +441,58 @@ static int st_showcase(int f) {
     return RUNNING;
 }
 
+// Character lineup: story cast and enemy types side by side, for visual review
+static int g_lineup[12];
+static int st_lineup(int f) {
+    static const struct { int kind; const char* preset; } cast[] = {
+        {AK_STORY, "damian"}, {AK_STORY, "marcus"}, {AK_STORY, "kincaid"}, {AK_STORY, "okafor"}, {AK_STORY, "thorne"},
+        {AK_STORY, "varga"}, {AK_THUG, "kings"}, {AK_POLICE, "police"}, {AK_STALKER, "stalker"}, {AK_BRUTE, "brute"},
+    };
+    int n = ARRAY_COUNT(cast);
+    vec3 base = landmark_pos(LM_DINER) + vec3(-9.0f, 0, -1.5f);   // lit sidewalk in front of the diner
+    if (f == 0) {
+        P().pos = base + vec3(0, 0, -30.0f);
+        for (int i = 0; i < n; i++) {
+            vec3 p = base + vec3(i * 1.6f + (i >= 8 ? (i - 7) * 0.8f : 0.0f), 0, 0);
+            p.y = world_ground_height(p + vec3(0, 2, 0), 0.3f, 3.0f);
+            g_lineup[i] = actor_spawn_preset(cast[i].kind, cast[i].preset, p, PI_F, 99 + i);
+            if (g_lineup[i] >= 0) {
+                Actor& a = g.actors[g_lineup[i]];
+                str_copy(a.tag, sizeof(a.tag), "autotest");
+                a.aiMode = AI_STAND;
+                a.aiTimer = 1e9f;
+                a.faction = FAC_CIVILIAN;
+                a.hostileToPlayer = false;
+            }
+        }
+    }
+    g.cam.cinematic = true;
+    if (f < 30) {
+        g.cam.cinePos = g.cam.pos = base + vec3(8.0f, 1.7f, -7.5f);
+        g.cam.cineTarget = g.cam.target = base + vec3(8.0f, 1.1f, 0);
+        g.cam.cineFov = g.cam.fov = 58;
+    } else {
+        // Close-up on the story cast's faces
+        g.cam.cinePos = g.cam.pos = base + vec3(2.4f, 1.72f, -2.2f);
+        g.cam.cineTarget = g.cam.target = base + vec3(2.4f, 1.62f, 0);
+        g.cam.cineFov = g.cam.fov = 40;
+    }
+    if (f == 26) shot("34_cast_lineup");
+    if (f == 56) shot("35_cast_closeup");
+    if (f < 60) return RUNNING;
+    camera_release();
+    clear_test_actors();
+    return PASS;
+}
+
 static int st_invasion_shot(int f) {
     if (f == 0) game_set_phase(3);
     vec3 c = landmark_pos(LM_PLAZA);
     g.cam.cinematic = true;
-    g.cam.cinePos = g.cam.pos = c + vec3(-30, 4.0f, 70);
-    g.cam.cineTarget = g.cam.target = c + vec3(10, 140, -60);
-    g.cam.cineFov = g.cam.fov = 70;
+    g.cam.cinePos = g.cam.pos = c + vec3(-8.0f, 1.8f, 14.0f);
+    g.cam.cineTarget = g.cam.target = c + vec3(0, 470.0f, -16.0f);
+    g.cam.cineFov = g.cam.fov = 75;
+    P().pos = c + vec3(-8.0f, 0.2f, 15.0f);
     if (f == 20) shot("20_invasion_sky");
     if (f < 25) return RUNNING;
     camera_release();
@@ -581,6 +626,7 @@ static const Step g_steps[] = {
     {"Wanted level & police dispatch", st_police, 900},
     {"Story & side missions (scripted run)", st_missions, 120000},
     {"Location showcase screenshots", st_showcase, 200},
+    {"Character lineup", st_lineup, 80},
     {"Invasion sky", st_invasion_shot, 40},
     {"Save / load / corruption handling", st_save_load, 10},
     {"Settings persistence", st_settings, 10},
@@ -606,8 +652,17 @@ void autotest_begin(const GameLaunchOptions* opt) {
 static bool step_selected(int i) {
     if (!g_only || !g_only[0]) return true;
     if (i <= 2) return true;  // boot + new game are always needed
-    // Case-sensitive substring match on the step name
-    return strstr(g_steps[i].name, g_only) != 0;
+    // Comma separated, case-sensitive substrings of step names
+    char buf[256];
+    str_copy(buf, sizeof(buf), g_only);
+    char* tok = buf;
+    while (tok && *tok) {
+        char* comma = strchr(tok, ',');
+        if (comma) *comma = 0;
+        if (*tok && strstr(g_steps[i].name, tok)) return true;
+        tok = comma ? comma + 1 : 0;
+    }
+    return false;
 }
 
 void autotest_frame(float dt) {

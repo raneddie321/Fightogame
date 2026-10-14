@@ -1,5 +1,6 @@
 // FIGHTO - skeleton, procedural humanoid/alien meshes, animation sampling.
 #include "character.h"
+#include "game.h"
 #include "../platform/platform.h"
 
 static const int g_parents[B_COUNT] = {-1, 0, 1, 2, 3, 2, 5, 6, 2, 8, 9, 0, 11, 12, 0, 14, 15};
@@ -305,7 +306,7 @@ static void limb(MeshBuilder* mb, vec3 a, vec3 b, float ra, float rb, int parent
     vec3 ref = fabsf(dir.y) < 0.9f ? vec3(0, 1, 0) : vec3(0, 0, 1);
     vec3 sx = normalize(cross(dir, ref));
     vec3 sy = cross(sx, dir);
-    const int rings = 5;
+    const int rings = 7;
     u32 base = (u32)mb->verts.count;
     for (int k = 0; k < rings; k++) {
         float t = (float)k / (rings - 1);
@@ -353,7 +354,7 @@ static void torso(MeshBuilder* mb, const Skeleton& s, const Appearance& a, const
         {1.52f, 0.07f, 0.06f, -0.01f, B_CHEST, B_NECK, 0.4f, 2},
     };
     const int NR = ARRAY_COUNT(rings);
-    const int seg = 16;
+    const int seg = 24;
     u32 base = (u32)mb->verts.count;
     bool brute = a.body == BODY_BRUTE;
     for (int k = 0; k < NR; k++) {
@@ -459,10 +460,23 @@ void character_build_mesh(MeshBuilder* mb, const Skeleton& s, const Appearance& 
         blob(mb, hc + vec3(0, -0.005f, 0.1f) * sc, vec3(0.017f, 0.03f, 0.022f) * sc, B_HEAD, 6, 5);
         blob(mb, hc + vec3(0.092f, 0.0f, 0.0f) * sc, vec3(0.012f, 0.03f, 0.02f) * sc, B_HEAD, 6, 4);
         blob(mb, hc + vec3(-0.092f, 0.0f, 0.0f) * sc, vec3(0.012f, 0.03f, 0.02f) * sc, B_HEAD, 6, 4);
-        Part eye = {MAT_PAINT, 0, 0.2f, vec3(0.05f, 0.04f, 0.04f), 0};
-        use(mb, eye);
-        blob(mb, hc + vec3(0.035f, 0.025f, 0.088f) * sc, vec3(0.013f, 0.009f, 0.008f) * sc, B_HEAD, 6, 4);
-        blob(mb, hc + vec3(-0.035f, 0.025f, 0.088f) * sc, vec3(0.013f, 0.009f, 0.008f) * sc, B_HEAD, 6, 4);
+        // Cheekbones and chin give the face planes instead of a featureless egg
+        blob(mb, hc + vec3(0.048f, -0.012f, 0.066f) * sc, vec3(0.03f, 0.024f, 0.022f) * sc, B_HEAD, 8, 5);
+        blob(mb, hc + vec3(-0.048f, -0.012f, 0.066f) * sc, vec3(0.03f, 0.024f, 0.022f) * sc, B_HEAD, 8, 5);
+        blob(mb, hc + vec3(0, -0.092f, 0.068f) * sc, vec3(0.03f, 0.024f, 0.026f) * sc, B_HEAD, 8, 5);
+        Part lips = {MAT_SKIN, 0, 0.7f, a.skin * vec3(0.78f, 0.55f, 0.52f), 0};
+        use(mb, lips);
+        blob(mb, hc + vec3(0, -0.056f, 0.093f) * sc, vec3(0.025f, 0.0075f, 0.01f) * sc, B_HEAD, 8, 4);
+        // Eyes: white sclera with a dark iris, set under the brow
+        Part sclera = {MAT_PAINT, 0, 0.15f, vec3(0.78f, 0.76f, 0.72f), 0};
+        Part iris = {MAT_PAINT, 0, 0.1f, vec3(0.07f, 0.05f, 0.04f), 0};
+        for (int e = 0; e < 2; e++) {
+            float ex = e == 0 ? 0.035f : -0.035f;
+            use(mb, sclera);
+            blob(mb, hc + vec3(ex, 0.024f, 0.086f) * sc, vec3(0.0135f, 0.0085f, 0.008f) * sc, B_HEAD, 8, 5);
+            use(mb, iris);
+            blob(mb, hc + vec3(ex, 0.024f, 0.0925f) * sc, vec3(0.0062f, 0.0062f, 0.0028f) * sc, B_HEAD, 8, 4);
+        }
         Part brow = {MAT_HAIR, 0, 1.0f, a.hairColor * 0.8f, 0};
         use(mb, brow);
         blob(mb, hc + vec3(0.035f, 0.045f, 0.09f) * sc, vec3(0.025f, 0.006f, 0.008f) * sc, B_HEAD, 6, 4);
@@ -475,16 +489,26 @@ void character_build_mesh(MeshBuilder* mb, const Skeleton& s, const Appearance& 
         // Hair / headwear
         if (a.hair == HAIR_SHORT || a.hair == HAIR_BUZZ) {
             use(mb, hair);
-            float th = a.hair == HAIR_BUZZ ? 1.02f : 1.07f;
-            blob(mb, hc + vec3(0, 0.025f, -0.008f) * sc, vec3(hr * 0.95f * th, hr * 1.02f * th, hr * 1.05f * th), B_HEAD, 14, 8);
+            // Shell shifted up and back so it caps the skull and leaves forehead, eyes and temples bare
+            float th = a.hair == HAIR_BUZZ ? 1.0f : 1.04f;
+            blob(mb, hc + vec3(0, 0.04f, -0.03f) * sc, vec3(hr * 0.98f * th, hr * 0.95f * th, hr * 1.0f * th), B_HEAD, 14, 8);
+            if (a.hair == HAIR_SHORT) {
+                // Volume on top, swept back, and sideburns
+                blob(mb, hc + vec3(0, 0.078f, -0.022f) * sc, vec3(hr * 0.84f, hr * 0.4f, hr * 0.9f), B_HEAD, 12, 6);
+                blob(mb, hc + vec3(0.083f, -0.025f, 0.02f) * sc, vec3(0.012f, 0.03f, 0.018f) * sc, B_HEAD, 6, 4);
+                blob(mb, hc + vec3(-0.083f, -0.025f, 0.02f) * sc, vec3(0.012f, 0.03f, 0.018f) * sc, B_HEAD, 6, 4);
+            }
         } else if (a.hair == HAIR_LONG) {
             use(mb, hair);
-            blob(mb, hc + vec3(0, 0.025f, -0.01f) * sc, vec3(hr * 1.02f, hr * 1.12f, hr * 1.1f), B_HEAD, 14, 8);
-            blob(mb, hc + vec3(0, -0.1f, -0.07f) * sc, vec3(0.05f, 0.13f, 0.04f) * sc, B_HEAD, 8, 6);
+            blob(mb, hc + vec3(0, 0.042f, -0.03f) * sc, vec3(hr * 1.02f, hr * 0.98f, hr * 1.03f), B_HEAD, 14, 8);
+            // Hair falling to the shoulders, with strands framing the face
+            blob(mb, hc + vec3(0, -0.11f, -0.055f) * sc, vec3(0.095f, 0.15f, 0.06f) * sc, B_HEAD, 12, 7);
+            blob(mb, hc + vec3(0.075f, -0.07f, 0.02f) * sc, vec3(0.025f, 0.09f, 0.04f) * sc, B_HEAD, 8, 5);
+            blob(mb, hc + vec3(-0.075f, -0.07f, 0.02f) * sc, vec3(0.025f, 0.09f, 0.04f) * sc, B_HEAD, 8, 5);
         } else if (a.hair == HAIR_CAP || a.hair == HAIR_POLICECAP) {
             Part cap = {MAT_FABRIC, 0, 1.0f, a.hair == HAIR_POLICECAP ? vec3(0.06f, 0.07f, 0.15f) : a.accent * 0.6f, 0};
             use(mb, cap);
-            blob(mb, hc + vec3(0, 0.05f, -0.005f) * sc, vec3(hr * 1.02f, hr * 0.75f, hr * 1.06f), B_HEAD, 14, 8);
+            blob(mb, hc + vec3(0, 0.062f, -0.012f) * sc, vec3(hr * 1.02f, hr * 0.7f, hr * 1.04f), B_HEAD, 14, 8);
             mb->set_bone(B_HEAD);
             mb->cone_frustum(hc + vec3(0, 0.065f, 0.06f) * sc, 0.075f * sc, 0.07f * sc, 0.01f * sc, 10, true);
             if (a.hair == HAIR_POLICECAP) {
@@ -501,7 +525,7 @@ void character_build_mesh(MeshBuilder* mb, const Skeleton& s, const Appearance& 
             blob(mb, hc + vec3(0, 0.02f, 0.105f) * sc, vec3(0.075f, 0.018f, 0.02f) * sc, B_HEAD, 10, 4);
         } else if (a.hair == HAIR_BANDANA) {
             use(mb, hair);
-            blob(mb, hc + vec3(0, 0.025f, -0.008f) * sc, vec3(hr * 1.0f, hr * 1.04f, hr * 1.07f), B_HEAD, 14, 8);
+            blob(mb, hc + vec3(0, 0.04f, -0.03f) * sc, vec3(hr * 1.0f, hr * 0.96f, hr * 1.02f), B_HEAD, 14, 8);
             Part band = {MAT_FABRIC, 0, 1.0f, a.accent, 0};
             use(mb, band);
             blob(mb, hc + vec3(0, -0.055f, 0.03f) * sc, vec3(0.085f, 0.04f, 0.08f) * sc, B_HEAD, 10, 6);
@@ -515,10 +539,11 @@ void character_build_mesh(MeshBuilder* mb, const Skeleton& s, const Appearance& 
         int hb = side == 0 ? B_L_HAND : B_R_HAND;
         bool bareArms = a.top == TOP_TSHIRT || a.top == TOP_SHIRTLESS;
         use(mb, a.top == TOP_SHIRTLESS ? skin : top);
-        blob(mb, J[ua] + vec3(side == 0 ? -0.02f : 0.02f, 0.01f, 0) * sc, vec3(0.07f, 0.065f, 0.07f) * sc * armR, ua, 10, 6);
-        limb(mb, J[ua], J[fa], 0.055f * sc * armR, 0.045f * sc * armR, B_CHEST, ua, fa, 10);
+        // Deltoid: flattened and tucked into the torso so the shoulder reads as one shape
+        blob(mb, J[ua] + vec3(side == 0 ? -0.025f : 0.025f, 0.012f, -0.004f) * sc, vec3(0.06f, 0.055f, 0.064f) * sc * armR, ua, 12, 7);
+        limb(mb, J[ua], J[fa], 0.055f * sc * armR, 0.045f * sc * armR, B_CHEST, ua, fa, 12);
         use(mb, bareArms ? skin : top);
-        limb(mb, J[fa], J[hb], 0.046f * sc * armR, 0.036f * sc * armR, ua, fa, hb, 10);
+        limb(mb, J[fa], J[hb], 0.046f * sc * armR, 0.036f * sc * armR, ua, fa, hb, 12);
         // Hand / claws
         if (alien && a.body != BODY_BRUTE) {
             use(mb, skin);
@@ -533,8 +558,23 @@ void character_build_mesh(MeshBuilder* mb, const Skeleton& s, const Appearance& 
             if (a.top == TOP_TACTICAL) hand = Part{MAT_LEATHER, 0, 1.0f, vec3(0.08f, 0.08f, 0.08f), 0};
             if (a.body == BODY_BRUTE) hand = skin;
             use(mb, hand);
-            blob(mb, J[hb] + vec3(0, -0.07f, 0.01f) * sc * armR, vec3(0.04f, 0.075f, 0.022f) * sc * armR * vec3(1, 1, 1.4f).x, hb, 8, 6);
-            blob(mb, J[hb] + vec3(side == 0 ? -0.03f : 0.03f, -0.04f, 0.03f) * sc, vec3(0.012f, 0.035f, 0.014f) * sc * armR, hb, 6, 4);
+            float hs = sc * (a.body == BODY_BRUTE ? armR : 1.0f);
+            vec3 h = J[hb];
+            // Palm, four slightly curled fingers and an opposed thumb
+            blob(mb, h + vec3(0, -0.045f, 0.004f) * hs, vec3(0.036f, 0.048f, 0.017f) * hs, hb, 8, 6);
+            mb->set_bone(hb);
+            for (int fi = 0; fi < 4; fi++) {
+                float xo = (fi - 1.5f) * 0.0165f;
+                float len = fi == 0 || fi == 3 ? 0.062f : 0.075f;
+                vec3 f0 = h + vec3(xo, -0.088f, 0.006f) * hs;
+                vec3 f1 = f0 + vec3(xo * 0.12f, -len * 0.62f, 0.012f) * hs;
+                vec3 f2 = f1 + vec3(0, -len * 0.38f, 0.016f) * hs;
+                mb->tube(f0, f1, 0.0085f * hs, 0.0078f * hs, 6, false, false);
+                mb->tube(f1, f2, 0.0078f * hs, 0.0068f * hs, 6, false, true);
+            }
+            vec3 t0 = h + vec3(0, -0.04f, 0.022f) * hs;
+            mb->tube(t0, t0 + vec3(0, -0.035f, 0.035f) * hs, 0.011f * hs, 0.008f * hs, 6, false, false);
+            mb->tube(t0 + vec3(0, -0.035f, 0.035f) * hs, t0 + vec3(0, -0.06f, 0.05f) * hs, 0.008f * hs, 0.007f * hs, 6, false, true);
         }
     }
 
@@ -544,8 +584,8 @@ void character_build_mesh(MeshBuilder* mb, const Skeleton& s, const Appearance& 
         int sh = side == 0 ? B_L_SHIN : B_R_SHIN;
         int ft = side == 0 ? B_L_FOOT : B_R_FOOT;
         use(mb, pants);
-        limb(mb, J[th] + vec3(0, 0.02f, 0) * sc, J[sh], 0.085f * sc * legR, 0.058f * sc * legR, B_PELVIS, th, sh, 10);
-        limb(mb, J[sh], J[ft], 0.058f * sc * legR, 0.042f * sc * legR, th, sh, ft, 10);
+        limb(mb, J[th] + vec3(0, 0.02f, 0) * sc, J[sh], 0.085f * sc * legR, 0.058f * sc * legR, B_PELVIS, th, sh, 12);
+        limb(mb, J[sh], J[ft], 0.058f * sc * legR, 0.042f * sc * legR, th, sh, ft, 12);
         use(mb, shoes);
         vec3 f = J[ft];
         if (alien) {
@@ -553,6 +593,9 @@ void character_build_mesh(MeshBuilder* mb, const Skeleton& s, const Appearance& 
             mb->tube(f, f + vec3(0, -0.07f, 0.2f) * sc, 0.035f * sc, 0.01f * sc, 6, true, true);
         } else {
             blob(mb, f + vec3(0, -0.035f, 0.07f) * sc, vec3(0.05f, 0.045f, 0.14f) * sc, ft, 10, 6);
+            Part sole = {MAT_RUBBER, 0, 1.0f, vec3(0.05f, 0.05f, 0.05f), 0};
+            use(mb, sole);
+            blob(mb, f + vec3(0, -0.068f, 0.07f) * sc, vec3(0.054f, 0.014f, 0.148f) * sc, ft, 10, 4);
         }
     }
 
@@ -586,6 +629,31 @@ void character_build_mesh(MeshBuilder* mb, const Skeleton& s, const Appearance& 
         mb->box(vec3(-0.13f, 1.3f, 0.151f) * sc, vec3(-0.03f, 1.33f, 0.155f) * sc);
         mb->box(vec3(0.16f, 1.4f, -0.02f) * sc, vec3(0.19f, 1.43f, 0.02f) * sc);
     }
+    if (!alien) {
+        // Collar for jackets, coats and suits; a bunched hood for hoodies; a belt on every pair of trousers
+        if (a.top == TOP_JACKET || a.top == TOP_COAT || a.top == TOP_SUIT || a.top == TOP_LABCOAT || a.top == TOP_UNIFORM) {
+            use(mb, top);
+            mb->set_bone(B_CHEST);
+            mb->cone_frustum(vec3(0, 1.455f * sc, -0.008f * sc), 0.088f * sc, 0.072f * sc, 0.065f * sc, 16, false);
+        }
+        if (a.top == TOP_HOODIE) {
+            use(mb, top);
+            blob(mb, vec3(0, 1.5f * sc, -0.085f * sc), vec3(0.115f, 0.07f, 0.06f) * sc, B_CHEST, 12, 6);
+            Part str = {MAT_FABRIC, 0, 1.0f, vec3(0.85f, 0.85f, 0.85f), 0};
+            use(mb, str);
+            mb->set_bone(B_CHEST);
+            mb->tube(vec3(0.03f, 1.44f, 0.115f) * sc, vec3(0.032f, 1.33f, 0.125f) * sc, 0.005f * sc, 0.005f * sc, 4, false, true);
+            mb->tube(vec3(-0.03f, 1.44f, 0.115f) * sc, vec3(-0.032f, 1.33f, 0.125f) * sc, 0.005f * sc, 0.005f * sc, 4, false, true);
+        }
+        if (a.top != TOP_TACTICAL && a.top != TOP_LABCOAT && a.top != TOP_COAT && a.top != TOP_UNIFORM) {
+            Part belt = {MAT_LEATHER, 0, 0.8f, vec3(0.06f, 0.045f, 0.035f), 0};
+            use(mb, belt);
+            blob(mb, vec3(0, 0.985f * sc, 0.0f), vec3(0.181f * bw, 0.022f, 0.121f) * sc, B_PELVIS, 16, 4);
+            Part buckle = {MAT_STEEL, MF_METAL, 0.4f, vec3(0.7f, 0.68f, 0.62f), 0};
+            use(mb, buckle);
+            blob(mb, vec3(0, 0.985f * sc, 0.121f * sc), vec3(0.022f, 0.016f, 0.006f) * sc, B_PELVIS, 6, 4);
+        }
+    }
     if (a.top == TOP_UNIFORM) {
         Part badge = {MAT_STEEL, MF_METAL, 0.4f, vec3(0.9f, 0.75f, 0.3f), 0};
         use(mb, badge);
@@ -605,7 +673,9 @@ void character_build_mesh(MeshBuilder* mb, const Skeleton& s, const Appearance& 
 // ---------------------------------------------------------------------------
 // Model cache and presets
 // ---------------------------------------------------------------------------
-#define MAX_MODELS 64
+// More slots than actors: when the cache is full there is always a model that no
+// active actor references, so a live actor's mesh is never replaced underneath it.
+#define MAX_MODELS (MAX_ACTORS + 8)
 static CharacterModel g_models[MAX_MODELS];
 
 static u32 appearance_hash(const Appearance& a) { return crc32(&a, sizeof(a), 0); }
@@ -616,7 +686,16 @@ CharacterModel* character_model_get(const Appearance& a) {
         if (g_models[i].used && g_models[i].hash == h) return &g_models[i];
     int slot = -1;
     for (int i = 0; i < MAX_MODELS; i++) if (!g_models[i].used) { slot = i; break; }
-    if (slot < 0) slot = (int)(h % MAX_MODELS);
+    if (slot < 0) {
+        static bool inUse[MAX_MODELS];
+        memset(inUse, 0, sizeof(inUse));
+        for (int i = 0; i < MAX_ACTORS; i++)
+            if (g.actors[i].active && g.actors[i].model) inUse[g.actors[i].model - g_models] = true;
+        int start = (int)(h % MAX_MODELS);
+        for (int k = 0; k < MAX_MODELS && slot < 0; k++)
+            if (!inUse[(start + k) % MAX_MODELS]) slot = (start + k) % MAX_MODELS;
+        if (slot < 0) slot = start;  // unreachable: MAX_MODELS > MAX_ACTORS
+    }
     CharacterModel& m = g_models[slot];
     if (m.used) mesh_destroy(&m.mesh);
     skeleton_build(&m.skel, a.body, a.height, a.build);
