@@ -259,11 +259,12 @@ void hud_render() {
     fmt_str(buf, sizeof(buf), "%d", (int)ceilf(p.health));
     ui_text_shadow(FONT_BOLD, vx + bw + 12 * s, vy - 8 * s, 26 * s, buf, kWhite);
 
-    // Money & wanted level (top right)
+    // Money & wanted level (top right; pushed below the MAP / pause buttons on touch screens)
+    float topY = touch ? 120 * s : 0.0f;
     fmt_str(buf, sizeof(buf), "$%d", g.pd.money);
-    ui_text_shadow(FONT_BOLD, W - 40 * s, 30 * s, 40 * s, buf, vec4(0.55f, 1.0f, 0.55f, 1), ALIGN_RIGHT);
+    ui_text_shadow(FONT_BOLD, W - 40 * s, topY + 30 * s, 40 * s, buf, vec4(0.55f, 1.0f, 0.55f, 1), ALIGN_RIGHT);
     for (int i = 0; i < 5; i++) {
-        vec2 c(W - 60 * s - i * 40 * s, 100 * s);
+        vec2 c(W - 60 * s - i * 40 * s, topY + 100 * s);
         bool lit = i < g.wanted.level;
         bool blink = lit && !g.wanted.seen && fmodf(g.realTime, 0.8f) < 0.4f;
         star(c, 15 * s, vec4(0, 0, 0, 0.6f));
@@ -273,7 +274,7 @@ void hud_render() {
     for (int i = 0; i < g.noteCount; i++) {
         const Notification& n = g.notes[i];
         float a = saturate(n.time * 2.0f) * saturate((4.0f - n.time) * 4.0f + 0.2f);
-        ui_text_shadow(FONT_BOLD, W - 40 * s, 140 * s + i * 34 * s, 24 * s, n.text, with_alpha(n.color, a), ALIGN_RIGHT);
+        ui_text_shadow(FONT_BOLD, W - 40 * s, topY + 140 * s + i * 34 * s, 24 * s, n.text, with_alpha(n.color, a), ALIGN_RIGHT);
     }
     if (g.saveStatusTime > 0) ui_text_shadow(FONT_BOLD, W - 40 * s, H - 230 * s, 24 * s, g.saveStatus, vec4(0.8f, 0.9f, 1.0f, saturate(g.saveStatusTime)), ALIGN_RIGHT);
 
