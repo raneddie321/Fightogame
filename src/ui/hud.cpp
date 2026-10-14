@@ -238,8 +238,9 @@ void hud_render() {
 
     draw_enemy_bars();
 
-    // Vitals (bottom left, above the touch joystick on mobile)
-    float vx = 40 * s, vy = H - (touch ? 300 : 70) * s;
+    // Vitals: bottom left on desktop; on touch screens top left under the minimap, clear of
+    // the joystick and buttons (which scale with screen height, not ui_scale)
+    float vx = 40 * s, vy = touch ? 248 * s : H - 70 * s;
     if (!touch) {
         float mapR = 115 * s;
         map_render(vx, H - 40 * s - mapR * 2 - 60 * s, mapR * 2, mapR * 2, false);
@@ -249,6 +250,7 @@ void hud_render() {
     } else {
         float mapR = 80 * s;
         map_render(30 * s, 30 * s, mapR * 2, mapR * 2, false);
+        vx = 30 * s;
     }
     float bw = 280 * s;
     bar(vx, vy, bw, 14 * s, p.health / p.maxHealth, p.health / p.maxHealth < 0.3f && fmodf(g.realTime, 0.6f) < 0.3f ? vec4(1, 0.3f, 0.25f, 1) : kRed, vec4(0.15f, 0.03f, 0.03f, 0.8f));
@@ -275,28 +277,40 @@ void hud_render() {
     }
     if (g.saveStatusTime > 0) ui_text_shadow(FONT_BOLD, W - 40 * s, H - 230 * s, 24 * s, g.saveStatus, vec4(0.8f, 0.9f, 1.0f, saturate(g.saveStatusTime)), ALIGN_RIGHT);
 
-    // Weapon & ammo (bottom right)
+    // Weapon & ammo / speedometer: bottom right on desktop, top left beside the minimap on touch
+    // screens (the bottom right belongs to the touch buttons there)
+    float ix = touch ? 220 * s : W - 40 * s;
+    int ialign = touch ? ALIGN_LEFT : ALIGN_RIGHT;
     if (p.state != AS_VEHICLE) {
         const WeaponDef& wd = g_weapons[p.weapon];
-        float wy = H - (touch ? 420 : 110) * s;
-        ui_text_shadow(FONT_BOLD, W - 40 * s, wy, 30 * s, wd.name, kWhite, ALIGN_RIGHT);
+        float wy = touch ? 40 * s : H - 110 * s;
+        ui_text_shadow(FONT_BOLD, ix, wy, 30 * s, wd.name, kWhite, ialign);
         if (wd.clipSize > 0) {
             fmt_str(buf, sizeof(buf), "%d / %d", p.clipAmmo, g.pd.reserve[p.weapon]);
             vec4 col = p.clipAmmo == 0 ? kRed : (p.clipAmmo < wd.clipSize / 4 ? vec4(1, 0.7f, 0.3f, 1) : kWhite);
-            ui_text_shadow(FONT_TITLE, W - 40 * s, wy + 34 * s, 46 * s, buf, col, ALIGN_RIGHT);
-            if (p.reloadTimer > 0) ui_text_shadow(FONT_BOLD, W - 40 * s, wy - 32 * s, 22 * s, "RELOADING", kGold, ALIGN_RIGHT);
-        } else {
-            ui_text_shadow(FONT_UI, W - 40 * s, wy + 36 * s, 22 * s, g.lockTarget >= 0 ? "LOCKED ON" : "Q: lock-on  |  RMB: block", kDim, ALIGN_RIGHT);
+            ui_text_shadow(FONT_TITLE, ix, wy + 34 * s, 46 * s, buf, col, ialign);
+            if (p.reloadTimer > 0) ui_text_shadow(FONT_BOLD, ix, touch ? wy + 90 * s : wy - 32 * s, 22 * s, "RELOADING", kGold, ialign);
+        } else if (!touch) {
+            ui_text_shadow(FONT_UI, ix, wy + 36 * s, 22 * s, g.lockTarget >= 0 ? "LOCKED ON" : "Q: lock-on  |  RMB: block", kDim, ialign);
+        } else if (g.lockTarget >= 0) {
+            ui_text_shadow(FONT_UI, ix, wy + 36 * s, 22 * s, "LOCKED ON", kDim, ialign);
         }
     } else if (p.vehicle >= 0) {
         Vehicle& v = g.vehicles[p.vehicle];
         float kmh = length(v.vel) * 3.6f;
         fmt_str(buf, sizeof(buf), "%d", (int)kmh);
-        float wy = H - (touch ? 430 : 130) * s;
-        ui_text_shadow(FONT_TITLE, W - 110 * s, wy, 70 * s, buf, kWhite, ALIGN_RIGHT);
-        ui_text_shadow(FONT_BOLD, W - 40 * s, wy + 38 * s, 24 * s, "KM/H", kDim, ALIGN_RIGHT);
-        ui_text_shadow(FONT_UI, W - 40 * s, wy + 74 * s, 20 * s, g_vehicleDefs[v.type].name, kDim, ALIGN_RIGHT);
-        bar(W - 240 * s, wy + 104 * s, 200 * s, 6 * s, v.health / g_vehicleDefs[v.type].health, vec4(0.9f, 0.6f, 0.2f, 1), vec4(0.1f, 0.06f, 0.02f, 0.8f));
+        float wy = touch ? 30 * s : H - 130 * s;
+        if (touch) {
+            ui_text_shadow(FONT_TITLE, ix, wy, 70 * s, buf, kWhite, ALIGN_LEFT);
+            ui_text_shadow(FONT_BOLD, ix + ui_text_width(FONT_TITLE, 70 * s, buf) + 12 * s, wy + 38 * s, 24 * s, "KM/H", kDim, ALIGN_LEFT);
+            ui_text_shadow(FONT_UI, ix, wy + 74 * s, 20 * s, g_vehicleDefs[v.type].name, kDim, ALIGN_LEFT);
+            bar(ix, wy + 104 * s, 200 * s, 6 * s, v.health / g_vehicleDefs[v.type].health, vec4(0.9f, 0.6f, 0.2f, 1), vec4(0.1f, 0.06f, 0.02f, 0.8f));
+        } else {
+            ui_text_shadow(FONT_TITLE, W - 110 * s, wy, 70 * s, buf, kWhite, ALIGN_RIGHT);
+            ui_text_shadow(FONT_BOLD, W - 40 * s, wy + 38 * s, 24 * s, "KM/H", kDim, ALIGN_RIGHT);
+            ui_text_shadow(FONT_UI, W - 40 * s, wy + 74 * s, 20 * s, g_vehicleDefs[v.type].name, kDim, ALIGN_RIGHT);
+            bar(W - 240 * s, wy + 104 * s, 200 * s, 6 * s, v.health / g_vehicleDefs[v.type].health, vec4(0.9f, 0.6f, 0.2f, 1), vec4(0.1f, 0.06f, 0.02f, 0.8f));
+        }
     }
 
     // Objective (top centre)
