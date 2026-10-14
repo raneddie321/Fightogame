@@ -102,10 +102,13 @@ bool save_deserialize(const u8* data, int size, char* err, int errCap) {
     memcpy(&version, data + 4, 4);
     memcpy(&psize, data + 8, 4);
     memcpy(&crc, data + 12, 4);
-    if (version == 0 || version > SAVE_VERSION) { fmt_str(err, errCap, "Save was made by a newer version (v%u)", version); return false; }
-    if (psize != (u32)(size - 16)) { fmt_str(err, errCap, "Save file is truncated or padded"); return false; }
+    // Integrity first: the version field is only meaningful once length and checksum match,
+    // otherwise random damage would be misreported as "made by a newer version"
+    if (psize != (u32)(size - 16)) { fmt_str(err, errCap, "Save file is corrupted (truncated or padded)"); return false; }
     const u8* payload = data + 16;
     if (crc32(payload, psize, 0) != crc) { fmt_str(err, errCap, "Save file is corrupted (checksum mismatch)"); return false; }
+    if (version == 0) { fmt_str(err, errCap, "Save file is corrupted (invalid version)"); return false; }
+    if (version > SAVE_VERSION) { fmt_str(err, errCap, "Save was made by a newer version (v%u)", version); return false; }
     PlayerData pd;
     memset(&pd, 0, sizeof(pd));
     pd.hasWeapon[W_FISTS] = true;
