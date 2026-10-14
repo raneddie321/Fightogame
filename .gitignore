@@ -11,3 +11,4 @@ autotest_out/
 dist/FIGHTO_Windows/
 *.keystore
 *.jks
+*.idsig
